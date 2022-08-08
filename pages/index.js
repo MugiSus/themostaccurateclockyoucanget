@@ -17,7 +17,7 @@ export default function Home() {
     useEffect(() => {
         if (typeof window === 'undefined') return;
 
-        const sessionId = crypto.randomBytes(9).toString('base64').replaceAll('/', '-').replaceAll('+', '_');
+        const sessionId = crypto.randomBytes(24).toString('base64').replaceAll('/', '-').replaceAll('+', '_');
         document.getElementsByClassName(styles.code)[0].textContent = sessionId;
 
         const references = {
