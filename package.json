@@ -9,9 +9,14 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "crypto": "^1.0.1",
+    "date-fns": "^2.29.1",
+    "firebase": "^9.9.2",
     "next": "12.2.4",
+    "node-fetch": "^3.2.10",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "sass": "^1.54.3"
   },
   "devDependencies": {
     "eslint": "8.21.0",
