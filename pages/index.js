@@ -94,7 +94,7 @@ export default function Home() {
 
             codeElements[2].textContent = format(now, 'yyyy/MM/dd HH:mm:ss.SSS');
             codeElements[3].textContent = format(calcDate, 'yyyy/MM/dd HH:mm:ss.SSS');
-            codeElements[4].textContent = (now <- calcDate ? "+" : "-") + format(Math.abs(now - calcDate) + timeZoneOffset, 'HH:mm:ss.SSS');
+            codeElements[4].textContent = (now <= calcDate ? "+" : "-") + format(Math.abs(now - calcDate) + timeZoneOffset, 'HH:mm:ss.SSS');
 
             requestAnimationFrame(updateTimeText);
         }
