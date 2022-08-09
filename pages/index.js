@@ -24,7 +24,7 @@ export default function Home() {
     const timeZoneOffset = new Date().getTimezoneOffset() * 60000;
     let latitude, longitude;
     let localTimeDifference = 0;
-    let longitudeTimedDifference = 0;
+    let calculatedLongitudeTimeDifference = 0;
     let isFirstGeoloction = true;
 
     useEffect(() => {
@@ -50,7 +50,7 @@ export default function Home() {
                 const dateUNIXtime = value;
                 if (dateUNIXtime) {
                     // document.getElementsByClassName(styles.code)[1].textContent = format(new Date(dateUNIXtime), 'yyyy/MM/dd HH:mm:ss.SSS');
-                    localTimeDifference = dateUNIXtime - Date.now() + timeZoneOffset;
+                    localTimeDifference = dateUNIXtime - Date.now();
                 }
             }
         });
@@ -67,7 +67,7 @@ export default function Home() {
         const geolocate = () => {
             navigator.geolocation.getCurrentPosition((position) => {
                 [latitude, longitude] = [position.coords.latitude, position.coords.longitude];
-                longitudeTimedDifference = longitude / 15 * 1000 * 60 * 60;
+                calculatedLongitudeTimeDifference = longitude / 15 * 1000 * 60 * 60;
                 document.getElementsByClassName(styles.code)[1].textContent = `${latitude}, ${longitude}`;
                 document.getElementsByClassName(styles.indicator)[0].animate(indicatorAniamtion.keyframes, indicatorAniamtion.options);
                 if (isFirstGeoloction) {
@@ -81,10 +81,11 @@ export default function Home() {
         setInterval(geolocate, 2500);
 
         const updateTimeText = () => {
-            const date = new Date(Date.now() + localTimeDifference);
-            document.getElementsByClassName(styles.code)[2].textContent = format(Date.now(), 'yyyy/MM/dd HH:mm:ss.SSS');
-            document.getElementsByClassName(styles.code)[3].textContent = format(date, 'yyyy/MM/dd HH:mm:ss.SSS');
-            document.getElementsByClassName(styles.code)[4].textContent = (localTimeDifference >= 0 ? "+" : "-") + format(Math.abs(localTimeDifference + longitudeTimedDifference) + timeZoneOffset, 'HH:mm:ss.SSS');
+            const now = Date.now();
+            const calcDate = now + localTimeDifference + timeZoneOffset + calculatedLongitudeTimeDifference;
+            document.getElementsByClassName(styles.code)[2].textContent = format(now, 'yyyy/MM/dd HH:mm:ss.SSS');
+            document.getElementsByClassName(styles.code)[3].textContent = format(calcDate, 'yyyy/MM/dd HH:mm:ss.SSS');
+            document.getElementsByClassName(styles.code)[4].textContent = (now <= calcDate ? "+" : "-") + format(Math.abs(now - calcDate) + timeZoneOffset, 'HH:mm:ss.SSS');
             requestAnimationFrame(updateTimeText);
         }
         updateTimeText();
