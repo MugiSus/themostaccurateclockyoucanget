@@ -61,7 +61,7 @@ export default function Home() {
         const geolocate = () => {
             navigator.geolocation.getCurrentPosition((position) => {
                 [latitude, longitude] = [position.coords.latitude, position.coords.longitude];
-                // [latitude, longitude] = [position.coords.latitude, 135];
+                // [latitude, longitude] = [43.3300946, 145.5827666];
                 // set(references.mysession, {
                 //     timestamp: serverTimestamp(),
                 //     latitude,
