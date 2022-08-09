@@ -13,8 +13,8 @@ export default function Home() {
 
     const indicatorAniamtion = {
         keyframes: [
-            { opacity: 1, filter: "brightness(1.2)" },
-            { opacity: 0.2, filter: "brightness(1)" },
+            { opacity: 1 },
+            { opacity: 0.2 },
         ],
         options: {
             duration: 2000,
