@@ -14,7 +14,7 @@ export default function Home() {
     const indicatorAniamtion = {
         keyframes: [
             { opacity: 1 },
-            { opacity: 0 },
+            { opacity: 0.2 },
         ],
         options: {
             duration: 2000,

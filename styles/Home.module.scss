@@ -41,12 +41,13 @@
         margin-right: 0.5rem;
         border-radius: 50%;
         background-color: #fac060;
-        opacity: 0;
+        opacity: 0.2;
     }
 
 }
 
 .code {
+    display: inline-block;
     background: #fafafa;
     border-radius: 5px;
     padding: 0.25rem 0.75rem;
