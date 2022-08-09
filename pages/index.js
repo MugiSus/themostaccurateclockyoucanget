@@ -11,6 +11,7 @@ import { useEffect } from 'react';
 
 export default function Home() {
 
+    const timeZoneOffset = new Date().getTimezoneOffset() * 60000;
     let longitude, latitude;
     let coordinatesDifference = 0;
     let localTimeDifference = 0;
@@ -42,7 +43,7 @@ export default function Home() {
                 const dateUNIXtime = value.timestamp + coordinatesDifference;
                 if (dateUNIXtime) {
                     // document.getElementsByClassName(styles.code)[1].textContent = format(new Date(dateUNIXtime), 'yyyy/MM/dd HH:mm:ss.SSS');
-                    localTimeDifference = dateUNIXtime - Date.now() + new Date().getTimezoneOffset() * 60000;
+                    localTimeDifference = dateUNIXtime - Date.now() + timeZoneOffset;
                 }
             }
         });
@@ -74,7 +75,7 @@ export default function Home() {
             const date = new Date(Date.now() + localTimeDifference);
             document.getElementsByClassName(styles.code)[2].textContent = format(Date.now(), 'yyyy/MM/dd HH:mm:ss.SSS');
             document.getElementsByClassName(styles.code)[3].textContent = format(date, 'yyyy/MM/dd HH:mm:ss.SSS');
-            document.getElementsByClassName(styles.code)[4].textContent = format(localTimeDifference + new Date().getTimezoneOffset() * 60000, 'HH:mm:ss.SSS');
+            document.getElementsByClassName(styles.code)[4].textContent = format(localTimeDifference + timeZoneOffset, 'HH:mm:ss.SSS');
             requestAnimationFrame(updateTimeText);
         }
         updateTimeText();
