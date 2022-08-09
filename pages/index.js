@@ -79,7 +79,7 @@ export default function Home() {
         updateTimeText();
 
         geolocate();
-        setInterval(geolocate, 1000);
+        setInterval(geolocate, 2000);
     }, [])
 
     return (
