@@ -80,7 +80,7 @@ export default function Home() {
         };
 
         geolocate();
-        setInterval(geolocate, 4000);
+        setInterval(geolocate, 2000);
 
         const updateTimeText = () => {
             const date = new Date(Date.now() + localTimeDifference);
