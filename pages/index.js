@@ -55,14 +55,6 @@ export default function Home() {
         });
         
         onDisconnect(references.mysession).remove();
-
-        // onChildAdded(references.sessions, (snapshot) => {
-        //     console.log(`child added "${snapshot.key}":`, snapshot.val());
-        // });
-
-        // onChildRemoved(references.sessions, (snapshot) => {
-        //     console.log(`child removed "${snapshot.key}":`, snapshot.val());
-        // });
     
         const requestServerTimestamp = () => {
             set(references.mysession, {
@@ -112,22 +104,27 @@ export default function Home() {
                 </h1>
 
                 <p className={styles.description}>
-
-                    <span>Your session ID:</span>
-                    <code className={styles.code}>------------</code>
-                    <br />
-                    <span className={styles.indicator}></span>
-                    Your coordinates:
-                    <code className={styles.code}>locationg...</code>
-                    <br />
-                    Your inaccurate clock:
-                    <code className={styles.code}></code>
-                    <br />
-                    Your most accurate clock:
-                    <code className={styles.code}></code>
-                    <br />
-                    <span className={styles.indicator}></span>
-                    Difference:
+                    <span className={styles.topicBlock}>
+                        Your session ID:
+                    </span>
+                    <code className={styles.code}>------------</code><br />
+                    <span className={styles.topicBlock}>
+                        <span className={styles.indicator}></span>
+                        Your coordinates:
+                    </span>
+                    <code className={styles.code}>locating...</code><br />
+                    <span className={styles.topicBlock}>
+                        Your inaccurate clock:
+                    </span>
+                    <code className={styles.code}></code><br />
+                    <span className={styles.topicBlock}>
+                        Your most accurate clock:
+                    </span>
+                    <code className={styles.code}></code><br />
+                    <span className={styles.topicBlock}>
+                        <span className={styles.indicator}></span>
+                        Difference:
+                    </span>
                     <code className={styles.code}></code>
                 </p>
             </main>

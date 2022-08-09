@@ -13,7 +13,7 @@
 }
 
 .title {
-	margin: 0;
+	margin: 4rem 0 0;
 	line-height: 1.15;
 	font-size: 4rem;
 }
@@ -27,37 +27,33 @@
 	margin: 4rem 0;
 	line-height: 1.6;
 	font-size: 1.4rem;
-}
 
-.indicator {
-    display: inline-flex;
-    justify-content: center;
-    width: 0.5rem;
-    height: 0.5rem;
-    margin: 0.25rem;
-    margin-right: 0.5rem;
-    border-radius: 50%;
-    background-color: #fac060;
-    opacity: 0;
-    // animation: flash 2s;
-}
-
-@keyframes flash {
-    0% {
-        opacity: 1;
+    .topicBlock {
+        display: inline-block;
     }
-    100% {
+
+    .indicator {
+        display: inline-flex;
+        justify-content: center;
+        width: 0.5rem;
+        height: 0.5rem;
+        margin: 0.25rem;
+        margin-right: 0.5rem;
+        border-radius: 50%;
+        background-color: #fac060;
         opacity: 0;
     }
+
 }
 
 .code {
-	background: #fafafa;
-	border-radius: 5px;
-	padding: 0.25rem 0.75rem;
-	font-size: 1.5rem;
-	font-family: Inconsolata, monospace;
+    background: #fafafa;
+    border-radius: 5px;
+    padding: 0.25rem 0.75rem;
+    font-size: 1.5rem;
+    font-family: Inconsolata, monospace;
 }
+
 
 @media (max-width: 600px) {
 	.grid {
