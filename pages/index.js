@@ -13,8 +13,8 @@ export default function Home() {
 
     const indicatorAniamtion = {
         keyframes: [
-            { opacity: 1 },
-            { opacity: 0.2 },
+            { opacity: 1, filter: "brightness(1.2)" },
+            { opacity: 0.2, filter: "brightness(1)" },
         ],
         options: {
             duration: 2000,
@@ -25,13 +25,16 @@ export default function Home() {
     let latitude, longitude;
     let localTimeDifference = 0;
     let calculatedLongitudeTimeDifference = 0;
-    let isFirstGeoloction = true;
+    let lastCoordinates = null;
 
     useEffect(() => {
         if (typeof window === 'undefined') return;
 
+        const codeElements = document.getElementsByClassName(styles.code);
+        const indicatorElements = document.getElementsByClassName(styles.indicator);
+
         const sessionId = crypto.randomBytes(9).toString('base64').replaceAll('/', '-').replaceAll('+', '_');
-        document.getElementsByClassName(styles.code)[0].textContent = sessionId;
+        codeElements[0].textContent = sessionId;
 
         const references = {
             root: ref(database, "/"),
@@ -49,7 +52,7 @@ export default function Home() {
             if (snapshot.key === "timestamp") {
                 const dateUNIXtime = value;
                 if (dateUNIXtime) {
-                    // document.getElementsByClassName(styles.code)[1].textContent = format(new Date(dateUNIXtime), 'yyyy/MM/dd HH:mm:ss.SSS');
+                    // codeElements[1].textContent = format(new Date(dateUNIXtime), 'yyyy/MM/dd HH:mm:ss.SSS');
                     localTimeDifference = dateUNIXtime - Date.now();
                 }
             }
@@ -61,18 +64,22 @@ export default function Home() {
             set(references.mysession, {
                 timestamp: serverTimestamp(),
             })
-            document.getElementsByClassName(styles.indicator)[1].animate(indicatorAniamtion.keyframes, indicatorAniamtion.options);
         }
         
         const geolocate = () => {
             navigator.geolocation.getCurrentPosition((position) => {
                 [latitude, longitude] = [position.coords.latitude, position.coords.longitude];
+
                 calculatedLongitudeTimeDifference = longitude / 15 * 1000 * 60 * 60;
-                document.getElementsByClassName(styles.code)[1].textContent = `${latitude}, ${longitude}`;
-                document.getElementsByClassName(styles.indicator)[0].animate(indicatorAniamtion.keyframes, indicatorAniamtion.options);
-                if (isFirstGeoloction) {
-                    isFirstGeoloction = false;
+                codeElements[1].textContent = `${latitude}, ${longitude}`;
+                indicatorElements[0].animate(indicatorAniamtion.keyframes, indicatorAniamtion.options);
+                
+                if (!lastCoordinates) {
+                    indicatorElements[1].animate(indicatorAniamtion.keyframes, indicatorAniamtion.options);
+                    lastCoordinates = {latitude, longitude};
                     requestServerTimestamp();
+                } else if (lastCoordinates.latitude !== latitude || lastCoordinates.longitude !== longitude) {
+                    indicatorElements[1].animate(indicatorAniamtion.keyframes, indicatorAniamtion.options);
                 }
             }, (error) => console.log(error));
         };
@@ -83,9 +90,11 @@ export default function Home() {
         const updateTimeText = () => {
             const now = Date.now();
             const calcDate = now + localTimeDifference + timeZoneOffset + calculatedLongitudeTimeDifference;
-            document.getElementsByClassName(styles.code)[2].textContent = format(now, 'yyyy/MM/dd HH:mm:ss.SSS');
-            document.getElementsByClassName(styles.code)[3].textContent = format(calcDate, 'yyyy/MM/dd HH:mm:ss.SSS');
-            document.getElementsByClassName(styles.code)[4].textContent = (now <= calcDate ? "+" : "-") + format(Math.abs(now - calcDate) + timeZoneOffset, 'HH:mm:ss.SSS');
+
+            codeElements[2].textContent = format(now, 'yyyy/MM/dd HH:mm:ss.SSS');
+            codeElements[3].textContent = format(calcDate, 'yyyy/MM/dd HH:mm:ss.SSS');
+            codeElements[4].textContent = (now <= calcDate ? "+" : "-") + format(Math.abs(now - calcDate) + timeZoneOffset, 'HH:mm:ss.SSS');
+
             requestAnimationFrame(updateTimeText);
         }
         updateTimeText();
