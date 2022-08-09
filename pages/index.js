@@ -11,10 +11,20 @@ import { useEffect } from 'react';
 
 export default function Home() {
 
+    const indicatorAniamtion = {
+        keyframes: [
+            { opacity: 1 },
+            { opacity: 0 },
+        ],
+        options: {
+            duration: 2000,
+            easing: 'ease-out',
+        }
+    }
     const timeZoneOffset = new Date().getTimezoneOffset() * 60000;
     let longitude, latitude;
-    let coordinatesDifference = 0;
     let localTimeDifference = 0;
+    let isFirstGeoloction = true;
 
     useEffect(() => {
         if (typeof window === 'undefined') return;
@@ -32,55 +42,50 @@ export default function Home() {
         off(references.sessions);
         off(references.mysession);
     
-        set(references.mysession, {
-            timestamp: serverTimestamp(),
-        })
-    
-        onChildChanged(references.sessions, (snapshot) => {
+        onChildChanged(references.mysession, (snapshot) => {
             const value = snapshot.val();
             // console.log(`child changed "${snapshot.key}":`, snapshot.val());
-            if (snapshot.key === sessionId) {
-                const dateUNIXtime = value.timestamp + coordinatesDifference;
+            if (snapshot.key === "timestamp") {
+                const dateUNIXtime = value + longitude / 15 * 1000 * 60 * 60;
                 if (dateUNIXtime) {
                     // document.getElementsByClassName(styles.code)[1].textContent = format(new Date(dateUNIXtime), 'yyyy/MM/dd HH:mm:ss.SSS');
                     localTimeDifference = dateUNIXtime - Date.now() + timeZoneOffset;
                 }
             }
         });
-
-        onChildAdded(references.sessions, (snapshot) => {
-            console.log(`child added "${snapshot.key}":`, snapshot.val());
-        });
-
-        onChildRemoved(references.sessions, (snapshot) => {
-            console.log(`child removed "${snapshot.key}":`, snapshot.val());
-        });
-    
+        
         onDisconnect(references.mysession).remove();
 
+        // onChildAdded(references.sessions, (snapshot) => {
+        //     console.log(`child added "${snapshot.key}":`, snapshot.val());
+        // });
+
+        // onChildRemoved(references.sessions, (snapshot) => {
+        //     console.log(`child removed "${snapshot.key}":`, snapshot.val());
+        // });
+    
+        const requestServerTimestamp = () => {
+            set(references.mysession, {
+                timestamp: serverTimestamp(),
+            })
+            document.getElementsByClassName(styles.indicator)[1].animate(indicatorAniamtion.keyframes, indicatorAniamtion.options);
+        }
+        
         const geolocate = () => {
             navigator.geolocation.getCurrentPosition((position) => {
                 [latitude, longitude] = [position.coords.latitude, position.coords.longitude];
-                // [latitude, longitude] = [43.3300946, 145.5827666];
-                // set(references.mysession, {
-                //     timestamp: serverTimestamp(),
-                //     latitude,
-                //     longitude,
-                // });
-                coordinatesDifference = longitude / 15 * 1000 * 60 * 60;
                 document.getElementsByClassName(styles.code)[1].textContent = `${latitude}, ${longitude}`;
-                document.getElementsByClassName(styles.indicator)[0].animate([
-                    { opacity: 1 },
-                    { opacity: 0 },
-                ], {
-                    duration: 2000,
-                    easing: 'ease-out',
-                });
+                document.getElementsByClassName(styles.indicator)[0].animate(indicatorAniamtion.keyframes, indicatorAniamtion.options);
+                if (isFirstGeoloction) {
+                    isFirstGeoloction = false;
+                    requestServerTimestamp();
+                }
             }, (error) => console.log(error));
         };
 
         geolocate();
-        setInterval(geolocate, 2000);
+        setInterval(geolocate, 2500);
+        setInterval(requestServerTimestamp, 60000);
 
         const updateTimeText = () => {
             const date = new Date(Date.now() + localTimeDifference);
@@ -113,7 +118,7 @@ export default function Home() {
                     <br />
                     <span className={styles.indicator}></span>
                     Your coordinates:
-                    <code className={styles.code}></code>
+                    <code className={styles.code}>locationg...</code>
                     <br />
                     Your inaccurate clock:
                     <code className={styles.code}></code>
@@ -121,6 +126,7 @@ export default function Home() {
                     Your most accurate clock:
                     <code className={styles.code}></code>
                     <br />
+                    <span className={styles.indicator}></span>
                     Difference:
                     <code className={styles.code}></code>
                 </p>
