@@ -64,13 +64,14 @@ export default function Home() {
                     longitude,
                     latitude,
                 });
-                document.getElementsByClassName(styles.code)[1].textContent = `${longitude}, ${latitude}`;
+                document.getElementsByClassName(styles.code)[1].textContent = `${latitude}, ${longitude}`;
             }, (error) => console.log(error));
         };
 
         const updateTimeText = () => {
             const date = new Date(Date.now() + localTimeDifference);
-            document.getElementsByClassName(styles.code)[2].textContent = format(date, 'yyyy/MM/dd HH:mm:ss.SSS');
+            document.getElementsByClassName(styles.code)[2].textContent = format(Date.now(), 'yyyy/MM/dd HH:mm:ss.SSS');
+            document.getElementsByClassName(styles.code)[3].textContent = format(date, 'yyyy/MM/dd HH:mm:ss.SSS');
             requestAnimationFrame(updateTimeText);
         }
         updateTimeText();
@@ -97,6 +98,9 @@ export default function Home() {
                     <code className={styles.code}>------------</code>
                     <br />
                     Your coordinates:
+                    <code className={styles.code}></code>
+                    <br />
+                    Your inaccurate clock:
                     <code className={styles.code}></code>
                     <br />
                     Your most accurate clock:
