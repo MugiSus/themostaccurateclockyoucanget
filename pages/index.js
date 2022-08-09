@@ -69,8 +69,18 @@ export default function Home() {
                 // });
                 coordinatesDifference = longitude / 15 * 1000 * 60 * 60;
                 document.getElementsByClassName(styles.code)[1].textContent = `${latitude}, ${longitude}`;
+                document.getElementsByClassName(styles.indicator)[0].animate([
+                    { opacity: 1 },
+                    { opacity: 0 },
+                ], {
+                    duration: 2000,
+                    easing: 'ease-out',
+                });
             }, (error) => console.log(error));
         };
+
+        geolocate();
+        setInterval(geolocate, 4000);
 
         const updateTimeText = () => {
             const date = new Date(Date.now() + localTimeDifference);
@@ -81,8 +91,6 @@ export default function Home() {
         }
         updateTimeText();
 
-        geolocate();
-        setInterval(geolocate, 4000);
     }, [])
 
     return (
@@ -99,9 +107,11 @@ export default function Home() {
                 </h1>
 
                 <p className={styles.description}>
+
                     <span>Your session ID:</span>
                     <code className={styles.code}>------------</code>
                     <br />
+                    <span className={styles.indicator}></span>
                     Your coordinates:
                     <code className={styles.code}></code>
                     <br />
