@@ -42,7 +42,7 @@ export default function Home() {
                 const dateUNIXtime = value.timestamp + coordinatesDifference;
                 if (dateUNIXtime) {
                     // document.getElementsByClassName(styles.code)[1].textContent = format(new Date(dateUNIXtime), 'yyyy/MM/dd HH:mm:ss.SSS');
-                    localTimeDifference = dateUNIXtime - Date.now();
+                    localTimeDifference = dateUNIXtime - Date.now() + new Date().getTimezoneOffset() * 60000;
                 }
             }
         });
@@ -71,9 +71,10 @@ export default function Home() {
         };
 
         const updateTimeText = () => {
-            const date = new Date(Date.now() + new Date().getTimezoneOffset() * 60000 + localTimeDifference);
+            const date = new Date(Date.now() + localTimeDifference);
             document.getElementsByClassName(styles.code)[2].textContent = format(Date.now(), 'yyyy/MM/dd HH:mm:ss.SSS');
             document.getElementsByClassName(styles.code)[3].textContent = format(date, 'yyyy/MM/dd HH:mm:ss.SSS');
+            document.getElementsByClassName(styles.code)[4].textContent = format(localTimeDifference, 'HH:mm:ss.SSS');
             requestAnimationFrame(updateTimeText);
         }
         updateTimeText();
@@ -106,6 +107,9 @@ export default function Home() {
                     <code className={styles.code}></code>
                     <br />
                     Your most accurate clock:
+                    <code className={styles.code}></code>
+                    <br />
+                    Difference:
                     <code className={styles.code}></code>
                 </p>
             </main>
