@@ -12,8 +12,8 @@ import { useEffect } from 'react';
 export default function Home() {
 
     let longitude, latitude;
-    let coordinatesDiffer = 0;
-    let localTimeDiffer = 0;
+    let coordinatesDifference = 0;
+    let localTimeDifference = 0;
 
     useEffect(() => {
         if (typeof window === 'undefined') return;
@@ -39,10 +39,10 @@ export default function Home() {
             const value = snapshot.val();
             // console.log(`child changed "${snapshot.key}":`, snapshot.val());
             if (snapshot.key === sessionId) {
-                const dateUNIXtime = value.timestamp + coordinatesDiffer;
+                const dateUNIXtime = value.timestamp + coordinatesDifference;
                 if (dateUNIXtime) {
                     // document.getElementsByClassName(styles.code)[1].textContent = format(new Date(dateUNIXtime), 'yyyy/MM/dd HH:mm:ss.SSS');
-                    localTimeDiffer = dateUNIXtime - Date.now();
+                    localTimeDifference = dateUNIXtime - Date.now();
                 }
             }
         });
@@ -65,13 +65,13 @@ export default function Home() {
                 //     longitude,
                 //     latitude,
                 // });
-                coordinatesDiffer = (longitude - 135) / 15 * 1000 * 60 * 60;
+                coordinatesDifference = longitude / 15 * 1000 * 60 * 60;
                 document.getElementsByClassName(styles.code)[1].textContent = `${latitude}, ${longitude}`;
             }, (error) => console.log(error));
         };
 
         const updateTimeText = () => {
-            const date = new Date(Date.now() + localTimeDiffer);
+            const date = new Date(Date.now() + new Date().getTimezoneOffset() * 60000 + localTimeDifference);
             document.getElementsByClassName(styles.code)[2].textContent = format(Date.now(), 'yyyy/MM/dd HH:mm:ss.SSS');
             document.getElementsByClassName(styles.code)[3].textContent = format(date, 'yyyy/MM/dd HH:mm:ss.SSS');
             requestAnimationFrame(updateTimeText);
