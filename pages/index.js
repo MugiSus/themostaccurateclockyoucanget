@@ -12,7 +12,8 @@ import { useEffect } from 'react';
 export default function Home() {
 
     let longitude, latitude;
-    let localTimeDifference = 0;
+    let coordinatesDiffer = 0;
+    let localTimeDiffer = 0;
 
     useEffect(() => {
         if (typeof window === 'undefined') return;
@@ -38,10 +39,10 @@ export default function Home() {
             const value = snapshot.val();
             // console.log(`child changed "${snapshot.key}":`, snapshot.val());
             if (snapshot.key === sessionId) {
-                const dateUNIXtime = value.timestamp + (value.longitude - 135) / 15 * 1000 * 60 * 60;
+                const dateUNIXtime = value.timestamp + coordinatesDiffer;
                 if (dateUNIXtime) {
                     // document.getElementsByClassName(styles.code)[1].textContent = format(new Date(dateUNIXtime), 'yyyy/MM/dd HH:mm:ss.SSS');
-                    localTimeDifference = dateUNIXtime - Date.now();
+                    localTimeDiffer = dateUNIXtime - Date.now();
                 }
             }
         });
@@ -59,17 +60,18 @@ export default function Home() {
         const geolocate = () => {
             navigator.geolocation.getCurrentPosition((position) => {
                 [longitude, latitude] = [position.coords.longitude, position.coords.latitude];
-                set(references.mysession, {
-                    timestamp: serverTimestamp(),
-                    // longitude,
-                    // latitude,
-                });
+                // set(references.mysession, {
+                //     timestamp: serverTimestamp(),
+                //     longitude,
+                //     latitude,
+                // });
+                coordinatesDiffer = (longitude - 135) / 15 * 1000 * 60 * 60;
                 document.getElementsByClassName(styles.code)[1].textContent = `${latitude}, ${longitude}`;
             }, (error) => console.log(error));
         };
 
         const updateTimeText = () => {
-            const date = new Date(Date.now() + localTimeDifference);
+            const date = new Date(Date.now() + localTimeDiffer);
             document.getElementsByClassName(styles.code)[2].textContent = format(Date.now(), 'yyyy/MM/dd HH:mm:ss.SSS');
             document.getElementsByClassName(styles.code)[3].textContent = format(date, 'yyyy/MM/dd HH:mm:ss.SSS');
             requestAnimationFrame(updateTimeText);
@@ -77,7 +79,7 @@ export default function Home() {
         updateTimeText();
 
         geolocate();
-        setInterval(geolocate, 5000);
+        setInterval(geolocate, 1000);
     }, [])
 
     return (
@@ -94,7 +96,7 @@ export default function Home() {
                 </h1>
 
                 <p className={styles.description}>
-                    Your session ID:
+                    <span>Your session ID:</span>
                     <code className={styles.code}>------------</code>
                     <br />
                     Your coordinates:
