@@ -78,7 +78,7 @@ export default function Home() {
                     indicatorElements[1].animate(indicatorAniamtion.keyframes, indicatorAniamtion.options);
                     lastCoordinates = {latitude, longitude};
                     requestServerTimestamp();
-                } else if (lastCoordinates.latitude !== latitude || lastCoordinates.longitude !== longitude) {
+                } else if (lastCoordinates.longitude !== longitude) {
                     indicatorElements[1].animate(indicatorAniamtion.keyframes, indicatorAniamtion.options);
                 }
             }, (error) => console.log(error));
