@@ -22,8 +22,9 @@ export default function Home() {
         }
     }
     const timeZoneOffset = new Date().getTimezoneOffset() * 60000;
-    let longitude, latitude;
+    let latitude, longitude;
     let localTimeDifference = 0;
+    let longitudeTimedDifference = 0;
     let isFirstGeoloction = true;
 
     useEffect(() => {
@@ -46,7 +47,7 @@ export default function Home() {
             const value = snapshot.val();
             // console.log(`child changed "${snapshot.key}":`, snapshot.val());
             if (snapshot.key === "timestamp") {
-                const dateUNIXtime = value + longitude / 15 * 1000 * 60 * 60;
+                const dateUNIXtime = value;
                 if (dateUNIXtime) {
                     // document.getElementsByClassName(styles.code)[1].textContent = format(new Date(dateUNIXtime), 'yyyy/MM/dd HH:mm:ss.SSS');
                     localTimeDifference = dateUNIXtime - Date.now() + timeZoneOffset;
@@ -66,6 +67,7 @@ export default function Home() {
         const geolocate = () => {
             navigator.geolocation.getCurrentPosition((position) => {
                 [latitude, longitude] = [position.coords.latitude, position.coords.longitude];
+                longitudeTimedDifference = longitude / 15 * 1000 * 60 * 60;
                 document.getElementsByClassName(styles.code)[1].textContent = `${latitude}, ${longitude}`;
                 document.getElementsByClassName(styles.indicator)[0].animate(indicatorAniamtion.keyframes, indicatorAniamtion.options);
                 if (isFirstGeoloction) {
@@ -77,13 +79,12 @@ export default function Home() {
 
         geolocate();
         setInterval(geolocate, 2500);
-        setInterval(requestServerTimestamp, 60000);
 
         const updateTimeText = () => {
             const date = new Date(Date.now() + localTimeDifference);
             document.getElementsByClassName(styles.code)[2].textContent = format(Date.now(), 'yyyy/MM/dd HH:mm:ss.SSS');
             document.getElementsByClassName(styles.code)[3].textContent = format(date, 'yyyy/MM/dd HH:mm:ss.SSS');
-            document.getElementsByClassName(styles.code)[4].textContent = (localTimeDifference >= 0 ? "+" : "-") + format(Math.abs(localTimeDifference) + timeZoneOffset, 'HH:mm:ss.SSS');
+            document.getElementsByClassName(styles.code)[4].textContent = (localTimeDifference >= 0 ? "+" : "-") + format(Math.abs(localTimeDifference + longitudeTimedDifference) + timeZoneOffset, 'HH:mm:ss.SSS');
             requestAnimationFrame(updateTimeText);
         }
         updateTimeText();
