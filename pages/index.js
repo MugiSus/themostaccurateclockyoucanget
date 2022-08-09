@@ -80,6 +80,7 @@ export default function Home() {
                     requestServerTimestamp();
                 } else if (lastCoordinates.longitude !== longitude) {
                     indicatorElements[1].animate(indicatorAniamtion.keyframes, indicatorAniamtion.options);
+                    lastCoordinates = {latitude, longitude};
                 }
             }, (error) => console.log(error));
         };
