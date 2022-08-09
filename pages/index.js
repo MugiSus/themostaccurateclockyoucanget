@@ -86,7 +86,7 @@ export default function Home() {
         };
 
         geolocate();
-        setInterval(geolocate, 2500);
+        setInterval(geolocate, 4000);
 
         const updateTimeText = () => {
             const now = Date.now();
