@@ -60,11 +60,12 @@ export default function Home() {
 
         const geolocate = () => {
             navigator.geolocation.getCurrentPosition((position) => {
-                [longitude, latitude] = [position.coords.longitude, position.coords.latitude];
+                [latitude, longitude] = [position.coords.latitude, position.coords.longitude];
+                // [latitude, longitude] = [position.coords.latitude, 135];
                 // set(references.mysession, {
                 //     timestamp: serverTimestamp(),
-                //     longitude,
                 //     latitude,
+                //     longitude,
                 // });
                 coordinatesDifference = longitude / 15 * 1000 * 60 * 60;
                 document.getElementsByClassName(styles.code)[1].textContent = `${latitude}, ${longitude}`;
@@ -75,13 +76,13 @@ export default function Home() {
             const date = new Date(Date.now() + localTimeDifference);
             document.getElementsByClassName(styles.code)[2].textContent = format(Date.now(), 'yyyy/MM/dd HH:mm:ss.SSS');
             document.getElementsByClassName(styles.code)[3].textContent = format(date, 'yyyy/MM/dd HH:mm:ss.SSS');
-            document.getElementsByClassName(styles.code)[4].textContent = format(localTimeDifference + timeZoneOffset, 'HH:mm:ss.SSS');
+            document.getElementsByClassName(styles.code)[4].textContent = (localTimeDifference > 0 ? "+" : "-") + format(Math.abs(localTimeDifference) + timeZoneOffset, 'HH:mm:ss.SSS');
             requestAnimationFrame(updateTimeText);
         }
         updateTimeText();
 
         geolocate();
-        setInterval(geolocate, 2000);
+        setInterval(geolocate, 4000);
     }, [])
 
     return (
