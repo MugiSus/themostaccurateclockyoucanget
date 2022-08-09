@@ -76,7 +76,7 @@ export default function Home() {
             const date = new Date(Date.now() + localTimeDifference);
             document.getElementsByClassName(styles.code)[2].textContent = format(Date.now(), 'yyyy/MM/dd HH:mm:ss.SSS');
             document.getElementsByClassName(styles.code)[3].textContent = format(date, 'yyyy/MM/dd HH:mm:ss.SSS');
-            document.getElementsByClassName(styles.code)[4].textContent = (localTimeDifference > 0 ? "+" : "-") + format(Math.abs(localTimeDifference) + timeZoneOffset, 'HH:mm:ss.SSS');
+            document.getElementsByClassName(styles.code)[4].textContent = (localTimeDifference >= 0 ? "+" : "-") + format(Math.abs(localTimeDifference) + timeZoneOffset, 'HH:mm:ss.SSS');
             requestAnimationFrame(updateTimeText);
         }
         updateTimeText();
