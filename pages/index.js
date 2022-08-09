@@ -61,8 +61,8 @@ export default function Home() {
                 [longitude, latitude] = [position.coords.longitude, position.coords.latitude];
                 set(references.mysession, {
                     timestamp: serverTimestamp(),
-                    longitude,
-                    latitude,
+                    // longitude,
+                    // latitude,
                 });
                 document.getElementsByClassName(styles.code)[1].textContent = `${latitude}, ${longitude}`;
             }, (error) => console.log(error));
