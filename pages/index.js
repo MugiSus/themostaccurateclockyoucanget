@@ -17,8 +17,8 @@ export default function Home() {
             { opacity: 0.2 },
         ],
         options: {
-            duration: 2000,
-            easing: 'ease-out',
+            duration: 2500,
+            easing: 'cubic-bezier(0.1, 0.5, 0.25, 1)',
         }
     }
     const timeZoneOffset = new Date().getTimezoneOffset() * 60000;
