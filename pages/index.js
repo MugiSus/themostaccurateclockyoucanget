@@ -49,12 +49,9 @@ export default function Home() {
         onChildChanged(references.mysession, (snapshot) => {
             const value = snapshot.val();
             // console.log(`child changed "${snapshot.key}":`, snapshot.val());
-            if (snapshot.key === "timestamp") {
+            if (snapshot.key === "timestamp" && value) {
                 const dateUNIXtime = value;
-                if (dateUNIXtime) {
-                    // codeElements[1].textContent = format(new Date(dateUNIXtime), 'yyyy/MM/dd HH:mm:ss.SSS');
-                    localTimeDifference = dateUNIXtime - Date.now();
-                }
+                localTimeDifference = dateUNIXtime - Date.now();
             }
         });
         
@@ -76,12 +73,11 @@ export default function Home() {
                 
                 if (!lastCoordinates) {
                     indicatorElements[1].animate(indicatorAniamtion.keyframes, indicatorAniamtion.options);
-                    lastCoordinates = {latitude, longitude};
                     requestServerTimestamp();
                 } else if (lastCoordinates.longitude !== longitude) {
                     indicatorElements[1].animate(indicatorAniamtion.keyframes, indicatorAniamtion.options);
-                    lastCoordinates = {latitude, longitude};
                 }
+                lastCoordinates = {latitude, longitude};
             }, (error) => console.log(error));
         };
 
@@ -90,11 +86,11 @@ export default function Home() {
 
         const updateTimeText = () => {
             const now = Date.now();
-            const calcDate = now + localTimeDifference + timeZoneOffset + calculatedLongitudeTimeDifference;
+            const calculatedDate = now + localTimeDifference + timeZoneOffset + calculatedLongitudeTimeDifference;
 
             codeElements[2].textContent = format(now, 'yyyy/MM/dd HH:mm:ss.SSS');
-            codeElements[3].textContent = format(calcDate, 'yyyy/MM/dd HH:mm:ss.SSS');
-            codeElements[4].textContent = (now <= calcDate ? "+" : "-") + format(Math.abs(now - calcDate) + timeZoneOffset, 'HH:mm:ss.SSS');
+            codeElements[3].textContent = format(calculatedDate, 'yyyy/MM/dd HH:mm:ss.SSS');
+            codeElements[4].textContent = (now <= calculatedDate ? "+" : "-") + format(Math.abs(now - calculatedDate) + timeZoneOffset, 'HH:mm:ss.SSS');
 
             requestAnimationFrame(updateTimeText);
         }
