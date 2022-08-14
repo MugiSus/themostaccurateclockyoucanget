@@ -107,30 +107,28 @@ export default function Home() {
         const geometry = new THREE.BoxGeometry( 0.2, 0.2, 0.2 );
         const material = new THREE.MeshNormalMaterial();
 
-        const mesh = new THREE.Mesh( geometry, material );
-        scene.add( mesh );
+        const mesh = new THREE.Mesh(geometry, material);
+        scene.add(mesh);
 
-        const renderer = new THREE.WebGLRenderer( { antialias: true } );
-        renderer.setSize( window.innerWidth, window.innerHeight );
-        renderer.setAnimationLoop( animation );
-        renderer.setClearAlpha(0);
-        document.body.appendChild( renderer.domElement );
+        const renderer = new THREE.WebGLRenderer({
+            antialias: true,
+            canvas: document.getElementsByClassName(styles.canvas)[0],
+        });
         
-        renderer.domElement.style.position = 'fixed';
-        renderer.domElement.style.top = '0';
-        renderer.domElement.style.left = '0';
-        renderer.domElement.style.zIndex = '-10000';
-
-        // animation
-
-        function animation( time ) {
-
-            mesh.rotation.x = time / 2000;
-            mesh.rotation.y = time / 1000;
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearAlpha(0);
+        renderer.setAnimationLoop((time) => {
+            mesh.rotation.x = time / 4000 * Math.PI;
+            mesh.rotation.y = time / 4000 * Math.PI;
 
             renderer.render( scene, camera );
+        });
 
-        }
+        window.addEventListener('resize', () => {
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+        });
     }, [])
 
     return (
@@ -171,6 +169,8 @@ export default function Home() {
                     <code className={styles.code}></code>
                 </p>
             </main>
+
+            <canvas className={styles.canvas}></canvas>
         </div>
     )
 }
