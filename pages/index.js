@@ -8,6 +8,7 @@ import { useEffect } from 'react';
 import { database } from '../utils/firebaseUtil'
 import { ref, off, set, serverTimestamp, onChildAdded, onChildRemoved, onChildChanged, onDisconnect } from 'firebase/database'
 import * as THREE from 'three'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { render } from 'react-dom';
 
 export default function Home() {
@@ -97,32 +98,55 @@ export default function Home() {
         }
         updateTimeText();
 
-        const camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.01, 10 );
+        const camera = new THREE.PerspectiveCamera( 90, window.innerWidth / window.innerHeight, 0.01, 10 );
         camera.position.z = 1;
 
         // init
 
         const scene = new THREE.Scene();
+        const renderer = new THREE.WebGLRenderer({
+            antialias: true,
+            alpha: true,
+            canvas: document.getElementsByClassName(styles.canvas)[0],
+        });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        
 
         const geometry = new THREE.BoxGeometry( 0.2, 0.2, 0.2 );
         const material = new THREE.MeshNormalMaterial();
 
         const mesh = new THREE.Mesh(geometry, material);
-        scene.add(mesh);
-
-        const renderer = new THREE.WebGLRenderer({
-            antialias: true,
-            canvas: document.getElementsByClassName(styles.canvas)[0],
-        });
+        // scene.add(mesh);
         
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setClearAlpha(0);
-        renderer.setAnimationLoop((time) => {
-            mesh.rotation.x = time / 4000 * Math.PI;
-            mesh.rotation.y = time / 4000 * Math.PI;
+        const gltfLoader = new GLTFLoader();
+        gltfLoader.load(
+            '/icosphere_earth.glb',
+            (gltf) => {
+                const model = gltf.scene.children[0];
+                model.scale.set(0.4, 0.4, 0.4);
+                model.material = new THREE.MeshNormalMaterial({
+                    wireframe: true,
+                });
+                scene.add(model);
+                console.log(model);
 
-            renderer.render( scene, camera );
-        });
+                renderer.setAnimationLoop((time) => {
+                    model.rotation.x = time / 8000 * Math.PI;
+                    model.rotation.y = time / 8000 * Math.PI;
+        
+                    renderer.render( scene, camera );
+                });
+            }, 
+            undefined,
+            (error) => {
+                console.error(error);
+            }
+        );
+
+        const light = new THREE.DirectionalLight(0xFFFFFF);
+        light.intensity = 1;
+        light.position.set(0.5, 0.5, 1);
+        scene.add(light);
 
         window.addEventListener('resize', () => {
             renderer.setSize(window.innerWidth, window.innerHeight);
