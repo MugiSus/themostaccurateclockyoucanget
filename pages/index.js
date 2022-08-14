@@ -98,11 +98,11 @@ export default function Home() {
         }
         updateTimeText();
 
+        
+        // init
         const camera = new THREE.PerspectiveCamera( 90, window.innerWidth / window.innerHeight, 0.01, 10 );
         camera.position.z = 1;
-
-        // init
-
+        
         const scene = new THREE.Scene();
         const renderer = new THREE.WebGLRenderer({
             antialias: true,
@@ -110,13 +110,6 @@ export default function Home() {
             canvas: document.getElementsByClassName(styles.canvas)[0],
         });
         renderer.setSize(window.innerWidth, window.innerHeight);
-        
-
-        const geometry = new THREE.BoxGeometry( 0.2, 0.2, 0.2 );
-        const material = new THREE.MeshNormalMaterial();
-
-        const mesh = new THREE.Mesh(geometry, material);
-        // scene.add(mesh);
         
         const gltfLoader = new GLTFLoader();
         gltfLoader.load(
