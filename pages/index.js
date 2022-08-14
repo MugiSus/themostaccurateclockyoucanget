@@ -118,13 +118,15 @@ export default function Home() {
                 const model = gltf.scene.children[0];
                 model.scale.set(1, 1, 1);
                 model.material = new THREE.MeshNormalMaterial({
-                    wireframe: true,
+                    // wireframe: true,
+                    transparent: true,
+                    opacity: 0.6,
                 });
                 scene.add(model);
                 console.log(model);
 
                 renderer.setAnimationLoop((time) => {
-                    model.rotation.x = time / 8000 * Math.PI;
+                    model.rotation.x = time / 16000 * Math.PI;
                     model.rotation.y = time / 8000 * Math.PI;
         
                     renderer.render( scene, camera );
