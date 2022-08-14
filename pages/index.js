@@ -120,7 +120,7 @@ export default function Home() {
                 model.material = new THREE.MeshNormalMaterial({
                     // wireframe: true,
                     transparent: true,
-                    opacity: 0.6,
+                    opacity: 0.30,
                 });
                 scene.add(model);
                 console.log(model);
