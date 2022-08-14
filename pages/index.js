@@ -101,7 +101,7 @@ export default function Home() {
         
         // init
         const camera = new THREE.PerspectiveCamera( 90, window.innerWidth / window.innerHeight, 0.01, 10 );
-        camera.position.z = 1;
+        camera.position.z = 2;
 
         const scene = new THREE.Scene();
         const renderer = new THREE.WebGLRenderer({
@@ -116,7 +116,7 @@ export default function Home() {
             '/icosphere_earth.glb',
             (gltf) => {
                 const model = gltf.scene.children[0];
-                model.scale.set(0.5, 0.5, 0.5);
+                model.scale.set(1, 1, 1);
                 model.material = new THREE.MeshNormalMaterial({
                     wireframe: true,
                 });
