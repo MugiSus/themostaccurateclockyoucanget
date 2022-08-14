@@ -4,10 +4,11 @@ import Image from 'next/image'
 import styles from '../styles/Home.module.scss'
 import crypto from 'crypto'
 import { format } from 'date-fns'
-
+import { useEffect } from 'react';
 import { database } from '../utils/firebaseUtil'
 import { ref, off, set, serverTimestamp, onChildAdded, onChildRemoved, onChildChanged, onDisconnect } from 'firebase/database'
-import { useEffect } from 'react';
+import * as THREE from 'three'
+import { render } from 'react-dom';
 
 export default function Home() {
 
@@ -90,12 +91,46 @@ export default function Home() {
 
             codeElements[2].textContent = format(now, 'yyyy/MM/dd HH:mm:ss.SSS');
             codeElements[3].textContent = format(calculatedDate, 'yyyy/MM/dd HH:mm:ss.SSS');
-            codeElements[4].textContent = (now <= calculatedDate ? "+" : "-") + format(Math.abs(now - calculatedDate) + timeZoneOffset, 'HH:mm:ss.SSS');
+            codeElements[4].textContent = (now > calculatedDate ? "-" : "+") + format(Math.abs(now - calculatedDate) + timeZoneOffset, 'HH:mm:ss.SSS');
 
             requestAnimationFrame(updateTimeText);
         }
         updateTimeText();
 
+        const camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.01, 10 );
+        camera.position.z = 1;
+
+        // init
+
+        const scene = new THREE.Scene();
+
+        const geometry = new THREE.BoxGeometry( 0.2, 0.2, 0.2 );
+        const material = new THREE.MeshNormalMaterial();
+
+        const mesh = new THREE.Mesh( geometry, material );
+        scene.add( mesh );
+
+        const renderer = new THREE.WebGLRenderer( { antialias: true } );
+        renderer.setSize( window.innerWidth, window.innerHeight );
+        renderer.setAnimationLoop( animation );
+        renderer.setClearAlpha(0);
+        document.body.appendChild( renderer.domElement );
+        
+        renderer.domElement.style.position = 'fixed';
+        renderer.domElement.style.top = '0';
+        renderer.domElement.style.left = '0';
+        renderer.domElement.style.zIndex = '-10000';
+
+        // animation
+
+        function animation( time ) {
+
+            mesh.rotation.x = time / 2000;
+            mesh.rotation.y = time / 1000;
+
+            renderer.render( scene, camera );
+
+        }
     }, [])
 
     return (
