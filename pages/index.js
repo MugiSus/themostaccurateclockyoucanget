@@ -118,7 +118,7 @@ export default function Home() {
                 const model = gltf.scene.children[0];
                 model.scale.set(1, 1, 1);
                 model.material = new THREE.MeshNormalMaterial({
-                    // wireframe: true,
+                    wireframe: true,
                     transparent: true,
                     opacity: 0.30,
                 });
@@ -126,8 +126,8 @@ export default function Home() {
                 console.log(model);
 
                 renderer.setAnimationLoop((time) => {
-                    model.rotation.x = time / 16000 * Math.PI;
-                    model.rotation.y = time / 8000 * Math.PI;
+                    model.rotation.x = Math.sin(time / 30000) * -0.25 * Math.PI;
+                    model.rotation.y = time / 30000 * Math.PI;
         
                     renderer.render( scene, camera );
                 });
@@ -137,11 +137,6 @@ export default function Home() {
                 console.error(error);
             }
         );
-
-        const light = new THREE.DirectionalLight(0xFFFFFF);
-        light.intensity = 1;
-        light.position.set(0.5, 0.5, 1);
-        scene.add(light);
 
         window.addEventListener('resize', () => {
             renderer.setSize(window.innerWidth, window.innerHeight);
