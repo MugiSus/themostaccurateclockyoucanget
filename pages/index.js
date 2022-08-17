@@ -109,7 +109,16 @@ export default function Home() {
             alpha: true,
             canvas: document.getElementsByClassName(styles.canvas)[0],
         });
-        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        const resize = () => {
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+        }
+
+        resize();
+        window.addEventListener('resize', resize);
         
         const gltfLoader = new GLTFLoader();
         gltfLoader.load(
@@ -137,12 +146,6 @@ export default function Home() {
                 console.error(error);
             }
         );
-
-        window.addEventListener('resize', () => {
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-        });
     }, [])
 
     return (
