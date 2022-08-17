@@ -128,8 +128,8 @@ export default function Home() {
                 model.scale.set(1, 1, 1);
                 model.material = new THREE.MeshNormalMaterial({
                     wireframe: true,
-                    transparent: true,
-                    opacity: 0.30,
+                    // transparent: true,
+                    // opacity: 0.30,
                 });
                 scene.add(model);
                 console.log(model);
