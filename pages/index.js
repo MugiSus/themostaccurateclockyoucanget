@@ -9,8 +9,6 @@ import { database } from '../utils/firebaseUtil'
 import { ref, off, set, serverTimestamp, onChildAdded, onChildRemoved, onChildChanged, onDisconnect } from 'firebase/database'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
-import { render } from 'react-dom';
-import { ca } from 'date-fns/locale';
 
 export default function Home() {
 
@@ -137,15 +135,15 @@ export default function Home() {
                 model.scale.set(1, 1, 1);
                 model.material = new THREE.MeshNormalMaterial({
                     wireframe: true,
-                    // transparent: true,
-                    // opacity: 0.30,
                 });
                 scene.add(model);
                 console.log(model);
                 
                 renderer.setAnimationLoop(animate);
             }, 
-            undefined,
+            (xhr) => {
+                console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+            },
             (error) => {
                 console.error(error);
             }
