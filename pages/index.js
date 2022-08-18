@@ -123,7 +123,7 @@ export default function Home() {
         const animate = (time) => {
             const t = time / 10000;
 
-            camera.position.set(Math.cos(t) * 2, 0, Math.sin(t) * 2);
+            camera.position.set(Math.sin(t) * 2, 0, Math.sin(t) * 2);
             camera.lookAt(0, 0, 0);
 
             renderer.render( scene, camera );
