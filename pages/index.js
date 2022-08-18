@@ -10,6 +10,7 @@ import { ref, off, set, serverTimestamp, onChildAdded, onChildRemoved, onChildCh
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { render } from 'react-dom';
+import { ca } from 'date-fns/locale';
 
 export default function Home() {
 
@@ -101,7 +102,8 @@ export default function Home() {
         
         // init
         const camera = new THREE.PerspectiveCamera( 90, window.innerWidth / window.innerHeight, 0.01, 10 );
-        camera.position.z = 2;
+        // camera.position.set(0, 0, 2);
+        // camera.lookAt(0, 0, 0);
 
         const scene = new THREE.Scene();
         const renderer = new THREE.WebGLRenderer({
@@ -116,9 +118,16 @@ export default function Home() {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
         }
-
         resize();
-        window.addEventListener('resize', resize);
+        
+        const animate = (time) => {
+            const t = time / 10000;
+
+            camera.position.set(Math.cos(t) * 2, 0, Math.sin(t) * 2);
+            camera.lookAt(0, 0, 0);
+
+            renderer.render( scene, camera );
+        }
         
         const gltfLoader = new GLTFLoader();
         gltfLoader.load(
@@ -133,19 +142,16 @@ export default function Home() {
                 });
                 scene.add(model);
                 console.log(model);
-
-                renderer.setAnimationLoop((time) => {
-                    model.rotation.x = Math.sin(time / 30000) * -0.25 * Math.PI;
-                    model.rotation.y = time / 30000 * Math.PI;
-        
-                    renderer.render( scene, camera );
-                });
+                
+                renderer.setAnimationLoop(animate);
             }, 
             undefined,
             (error) => {
                 console.error(error);
             }
         );
+
+        window.addEventListener('resize', resize);
     }, [])
 
     return (
