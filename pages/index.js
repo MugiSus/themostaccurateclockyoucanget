@@ -9,6 +9,7 @@ import { database } from '../utils/firebaseUtil'
 import { ref, off, set, serverTimestamp, onChildAdded, onChildRemoved, onChildChanged, onDisconnect } from 'firebase/database'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
+import { maxHeaderSize } from 'http';
 
 export default function Home() {
 
@@ -118,10 +119,11 @@ export default function Home() {
         }
         resize();
         
+        const angleRad = 23.4 * Math.PI / 180;
         const animate = (time) => {
             const t = time / 10000;
 
-            camera.position.set(Math.cos(t) * 2, 0, Math.sin(t) * 2);
+            camera.position.set(Math.cos(t) * 2, Math.sin(t) * 2 * Math.sin(angleRad), Math.sin(t) * 2 * Math.cos(angleRad));
             camera.lookAt(0, 0, 0);
 
             renderer.render( scene, camera );
