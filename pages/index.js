@@ -99,7 +99,7 @@ export default function Home() {
 
         
         // init
-        const camera = new THREE.PerspectiveCamera( 90, window.innerWidth / window.innerHeight, 0.01, 10 );
+        const camera = new THREE.PerspectiveCamera(90);
         // camera.position.set(0, 0, 2);
         // camera.lookAt(0, 0, 0);
 
@@ -142,7 +142,7 @@ export default function Home() {
                 renderer.setAnimationLoop(animate);
             }, 
             (xhr) => {
-                console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+                console.log(`${xhr.loaded / xhr.total * 100}% loaded`);
             },
             (error) => {
                 console.error(error);
