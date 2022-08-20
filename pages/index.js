@@ -101,8 +101,8 @@ export default function Home() {
         
         // init
         const camera = new THREE.PerspectiveCamera(90);
-        // camera.position.set(0, 0, 2);
-        // camera.lookAt(0, 0, 0);
+        camera.position.set(0, 0, 2);
+        camera.lookAt(0, 0, 0);
 
         const scene = new THREE.Scene();
         const renderer = new THREE.WebGLRenderer({
@@ -119,12 +119,11 @@ export default function Home() {
         }
         resize();
         
-        const angleRad = 23.4 * Math.PI / 180;
+        let icosphereModel;
+        const axisAngle = 23.4 * Math.PI / 180;
         const animate = (time) => {
-            const t = time / 10000;
-
-            camera.position.set(Math.cos(t) * 2, Math.sin(t) * 2 * Math.sin(angleRad), Math.sin(t) * 2 * Math.cos(angleRad));
-            camera.lookAt(0, 0, 0);
+            const t = time / 48000;
+            icosphereModel.quaternion.setFromAxisAngle(new THREE.Vector3(Math.sin(axisAngle), Math.cos(axisAngle), 0), t * Math.PI * 2);
 
             renderer.render( scene, camera );
         }
@@ -133,13 +132,13 @@ export default function Home() {
         gltfLoader.load(
             '/icosphere_earth.glb',
             (gltf) => {
-                const model = gltf.scene.children[0];
-                model.scale.set(1, 1, 1);
-                model.material = new THREE.MeshNormalMaterial({
+                icosphereModel = gltf.scene.children[0];
+                icosphereModel.scale.set(1, 1, 1);
+                icosphereModel.material = new THREE.MeshNormalMaterial({
                     wireframe: true,
                 });
-                scene.add(model);
-                console.log(model);
+                scene.add(icosphereModel);
+                console.log(icosphereModel);
                 
                 renderer.setAnimationLoop(animate);
             }, 
@@ -180,16 +179,16 @@ export default function Home() {
                     <span className={styles.topicBlock}>
                         Your inaccurate clock:
                     </span>
-                    <code className={styles.code}></code><br />
+                    <code className={styles.code}>...</code><br />
                     <span className={styles.topicBlock}>
                         Your most accurate clock:
                     </span>
-                    <code className={styles.code}></code><br />
+                    <code className={styles.code}>...</code><br />
                     <span className={styles.topicBlock}>
                         <span className={styles.indicator}></span>
                         Difference:
                     </span>
-                    <code className={styles.code}></code>
+                    <code className={styles.code}>...</code>
                 </p>
             </main>
 
