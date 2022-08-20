@@ -122,8 +122,8 @@ export default function Home() {
         let icosphereModel;
         const axisAngle = 23.4 * Math.PI / 180;
         const animate = (time) => {
-            const t = time / 48000;
-            icosphereModel.quaternion.setFromAxisAngle(new THREE.Vector3(Math.sin(axisAngle), Math.cos(axisAngle), 0), t * Math.PI * 2);
+            const rad = time / 30000 * Math.PI / 2;
+            icosphereModel.quaternion.setFromAxisAngle(new THREE.Vector3(Math.sin(axisAngle), Math.cos(axisAngle), 0), rad);
 
             renderer.render( scene, camera );
         }
