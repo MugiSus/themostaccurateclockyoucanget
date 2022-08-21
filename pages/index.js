@@ -119,12 +119,12 @@ export default function Home() {
         }
         resize();
         
-        let icosphereModel;
+        let icosphere;
         const axisAngle = 23.4 * Math.PI / 180;
         const axisVector = new THREE.Vector3(Math.sin(axisAngle), Math.cos(axisAngle), 0);
         const animate = (time) => {
             const rad = time / 20000 * Math.PI / 2;
-            icosphereModel.quaternion.setFromAxisAngle(axisVector, rad);
+            icosphere.quaternion.setFromAxisAngle(axisVector, rad);
 
             renderer.render( scene, camera );
         }
@@ -133,13 +133,13 @@ export default function Home() {
         gltfLoader.load(
             '/icosphere_earth.glb',
             (gltf) => {
-                icosphereModel = gltf.scene.children[0];
-                icosphereModel.scale.set(1, 1, 1);
-                icosphereModel.material = new THREE.MeshNormalMaterial({
+                icosphere = gltf.scene.children[0];
+                icosphere.scale.set(1, 1, 1);
+                icosphere.material = new THREE.MeshNormalMaterial({
                     wireframe: true,
                 });
-                scene.add(icosphereModel);
-                console.log(icosphereModel);
+                scene.add(icosphere);
+                console.log(icosphere);
                 
                 renderer.setAnimationLoop(animate);
             }, 
