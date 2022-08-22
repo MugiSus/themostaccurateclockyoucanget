@@ -6,7 +6,7 @@ import crypto from 'crypto'
 import { format } from 'date-fns'
 import { useEffect } from 'react';
 import { database } from '../utils/firebaseUtil'
-import { ref, off, set, serverTimestamp, onChildAdded, onChildRemoved, onChildChanged, onDisconnect } from 'firebase/database'
+import { ref, off, set, serverTimestamp, onChildAdded, onChildRemoved, onChildChanged, onDisconnect, startAfter } from 'firebase/database'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { maxHeaderSize } from 'http';
@@ -119,29 +119,41 @@ export default function Home() {
         }
         resize();
         
-        let icosphere;
+        const stage = new THREE.Object3D();
+        scene.add(stage);
+
         const axisAngle = 23.4 * Math.PI / 180;
         const axisVector = new THREE.Vector3(Math.sin(axisAngle), Math.cos(axisAngle), 0);
+        
         const animate = (time) => {
             const rad = time / 20000 * Math.PI / 2;
-            icosphere.quaternion.setFromAxisAngle(axisVector, rad);
+            stage.quaternion.setFromAxisAngle(axisVector, rad);
 
             renderer.render( scene, camera );
         }
+        renderer.setAnimationLoop(animate);
         
         const gltfLoader = new GLTFLoader();
         gltfLoader.load(
             '/icosphere_earth.glb',
             (gltf) => {
-                icosphere = gltf.scene.children[0];
+                const icosphere = gltf.scene.children[0];
+
                 icosphere.scale.set(1, 1, 1);
                 icosphere.material = new THREE.MeshNormalMaterial({
                     wireframe: true,
                 });
-                scene.add(icosphere);
+                stage.add(icosphere);
+
+                // const icospherePointsMaterial = new THREE.PointsMaterial({
+                //     sizeAttenuation: true,
+                //     size: 0.01,
+                //     color: 0xffffff,
+                // });
+                // const icospherePoints = new THREE.Points(icosphere.geometry, icospherePointsMaterial);
+                // stage.add(icospherePoints);
+
                 console.log(icosphere);
-                
-                renderer.setAnimationLoop(animate);
             }, 
             (xhr) => {
                 console.log(`${xhr.loaded / xhr.total * 100}% loaded`);
