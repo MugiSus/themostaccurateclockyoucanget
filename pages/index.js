@@ -9,7 +9,6 @@ import { database } from '../utils/firebaseUtil'
 import { ref, off, set, serverTimestamp, onChildAdded, onChildRemoved, onChildChanged, onDisconnect, startAfter } from 'firebase/database'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
-import { maxHeaderSize } from 'http';
 
 export default function Home() {
 
