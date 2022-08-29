@@ -14,14 +14,8 @@ export default function Home() {
 
     const timeZoneOffset = new Date().getTimezoneOffset() * 60000;
     const indicatorAniamtion = [
-        [
-            { opacity: 1 },
-            { opacity: 0.2 },
-        ],
-        {
-            duration: 2500,
-            easing: 'cubic-bezier(0.1, 0.5, 0.25, 1)',
-        }
+        [{ opacity: 1 }, { opacity: 0.2 }],
+        { duration: 2500, easing: 'cubic-bezier(0.1, 0.5, 0.25, 1)' }
     ]
     let latitude, longitude;
     let localTimeDifference = 0;
