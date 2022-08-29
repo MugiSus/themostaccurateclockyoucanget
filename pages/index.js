@@ -12,16 +12,16 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 
 export default function Home() {
 
-    const indicatorAniamtion = {
-        keyframes: [
+    const indicatorAniamtion = [
+        [
             { opacity: 1 },
             { opacity: 0.2 },
         ],
-        options: {
+        {
             duration: 2500,
             easing: 'cubic-bezier(0.1, 0.5, 0.25, 1)',
         }
-    }
+    ]
     const timeZoneOffset = new Date().getTimezoneOffset() * 60000;
     let latitude, longitude;
     let localTimeDifference = 0;
@@ -70,13 +70,13 @@ export default function Home() {
 
                 calculatedLongitudeTimeDifference = longitude / 15 * 1000 * 60 * 60;
                 codeElements[1].textContent = `${latitude}, ${longitude}`;
-                indicatorElements[0].animate(indicatorAniamtion.keyframes, indicatorAniamtion.options);
+                indicatorElements[0].animate(...indicatorAniamtion);
                 
                 if (!lastCoordinates) {
-                    indicatorElements[1].animate(indicatorAniamtion.keyframes, indicatorAniamtion.options);
+                    indicatorElements[1].animate(...indicatorAniamtion);
                     requestServerTimestamp();
                 } else if (lastCoordinates.longitude !== longitude) {
-                    indicatorElements[1].animate(indicatorAniamtion.keyframes, indicatorAniamtion.options);
+                    indicatorElements[1].animate(...indicatorAniamtion);
                 }
                 lastCoordinates = {latitude, longitude};
             }, (error) => console.log(error));
