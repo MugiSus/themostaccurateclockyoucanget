@@ -23,8 +23,9 @@ export default function Home() {
     const requestServerTimestamp = async () => {
         const res = await fetch('http://worldtimeapi.org/api/timezone/Etc/GMT');
         const json = await res.json();
-        console.log(json.unixtime);
-        return json.unixtime;
+        const serverTimestamp = new Date(json.datetime).getTime();
+        localTimeDifference = serverTimestamp - Date.now();
+        return serverTimestamp;
     };
 
     useEffect(() => {
@@ -39,7 +40,7 @@ export default function Home() {
                 // [latitude, longitude] = [40.26760178, 140.93550375];
 
                 calculatedLongitudeTimeDifference = longitude / 15 * 60 * 60 * 1000;
-                codeElements[1].textContent = `${latitude}, ${longitude}`;
+                codeElements[0].textContent = `${latitude}, ${longitude}`;
                 indicatorElements[0].animate(...indicatorAniamtion);
                 
                 if (!lastCoordinates) {
