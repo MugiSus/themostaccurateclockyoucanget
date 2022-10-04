@@ -26,7 +26,7 @@ export default function Home() {
     let lastCoordinates = null;
 
     const requestServerTimestamp = async () => {
-        let timeRequestSent = performance.now();
+        const timeRequestSent = performance.now();
 
         const res = await fetch(requestAddress);
         const json = await res.json();
