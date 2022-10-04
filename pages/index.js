@@ -2,7 +2,6 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.scss'
-import crypto from 'crypto'
 import { format } from 'date-fns'
 import { useEffect } from 'react';
 import fetch from 'isomorphic-unfetch';
@@ -19,12 +18,16 @@ export default function Home() {
     let localTimeDifference = 0;
     let calculatedLongitudeTimeDifference = 0;
     let lastCoordinates = null;
+    let timeRequestSent = null;
 
     const requestServerTimestamp = async () => {
         const res = await fetch('http://worldtimeapi.org/api/timezone/Etc/GMT');
         const json = await res.json();
         const serverTimestamp = new Date(json.datetime).getTime();
-        localTimeDifference = serverTimestamp - Date.now();
+        
+        const requestTime = performance.now() - timeRequestSent;
+        localTimeDifference = serverTimestamp - Date.now() + requestTime / 2;
+        
         return serverTimestamp;
     };
 
@@ -48,6 +51,7 @@ export default function Home() {
                 
                 if (!lastCoordinates) {
                     indicatorElements[1].animate(...indicatorAniamtion);
+                    timeRequestSent = performance.now();
                     requestServerTimestamp();
                 } else if (lastCoordinates.longitude !== longitude) {
                     indicatorElements[1].animate(...indicatorAniamtion);
