@@ -5,8 +5,7 @@ import styles from '../styles/Home.module.scss'
 import crypto from 'crypto'
 import { format } from 'date-fns'
 import { useEffect } from 'react';
-import { database } from '../utils/firebaseUtil'
-import { ref, off, set, serverTimestamp, onChildAdded, onChildRemoved, onChildChanged, onDisconnect, startAfter } from 'firebase/database'
+import fetch from 'isomorphic-unfetch';
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 
@@ -21,41 +20,18 @@ export default function Home() {
     let calculatedLongitudeTimeDifference = 0;
     let lastCoordinates = null;
 
+    const requestServerTimestamp = async () => {
+        const res = await fetch('http://worldtimeapi.org/api/timezone/Etc/GMT');
+        const json = await res.json();
+        console.log(json.unixtime);
+        return json.unixtime;
+    };
+
     useEffect(() => {
         if (typeof window === 'undefined') return;
 
         const codeElements = document.getElementsByClassName(styles.code);
         const indicatorElements = document.getElementsByClassName(styles.indicator);
-
-        const sessionId = crypto.randomBytes(9).toString('base64').replaceAll('/', '-').replaceAll('+', '_');
-        codeElements[0].textContent = sessionId;
-
-        const references = {
-            root: ref(database, "/"),
-            sessions: ref(database, `/sessions`),
-            mysession: ref(database, `/sessions/${sessionId}`),
-        };
-    
-        off(references.root);
-        off(references.sessions);
-        off(references.mysession);
-    
-        onChildChanged(references.mysession, (snapshot) => {
-            const value = snapshot.val();
-            // console.log(`child changed "${snapshot.key}":`, snapshot.val());
-            if (snapshot.key === "timestamp" && value) {
-                const dateUNIXtime = value;
-                localTimeDifference = dateUNIXtime - Date.now();
-            }
-        });
-        
-        onDisconnect(references.mysession).remove();
-    
-        const requestServerTimestamp = () => {
-            set(references.mysession, {
-                timestamp: serverTimestamp(),
-            })
-        }
         
         const geolocate = () => {
             navigator.geolocation.getCurrentPosition((position) => {
@@ -77,15 +53,15 @@ export default function Home() {
         };
 
         geolocate();
-        setInterval(geolocate, 4000);
+        setInterval(geolocate, 5000);
 
         const updateTimeText = () => {
             const now = Date.now();
             const calculatedDate = now + localTimeDifference + timeZoneOffset + calculatedLongitudeTimeDifference;
 
-            codeElements[2].textContent = format(now, 'yyyy/MM/dd HH:mm:ss.SSS');
-            codeElements[3].textContent = format(calculatedDate, 'yyyy/MM/dd HH:mm:ss.SSS');
-            codeElements[4].textContent = (now > calculatedDate ? "-" : "+") + format(Math.abs(now - calculatedDate) + timeZoneOffset, 'HH:mm:ss.SSS');
+            codeElements[1].textContent = format(now, 'yyyy/MM/dd HH:mm:ss.SSS');
+            codeElements[2].textContent = format(calculatedDate, 'yyyy/MM/dd HH:mm:ss.SSS');
+            codeElements[3].textContent = (now > calculatedDate ? "-" : "+") + format(Math.abs(now - calculatedDate) + timeZoneOffset, 'HH:mm:ss.SSS');
 
             requestAnimationFrame(updateTimeText);
         }
@@ -173,10 +149,6 @@ export default function Home() {
                 </h1>
 
                 <p className={styles.description}>
-                    <span className={styles.topicBlock}>
-                        Your session ID:
-                    </span>
-                    <code className={styles.code}>------------</code><br />
                     <span className={styles.topicBlock}>
                         <span className={styles.indicator}></span>
                         Your coordinates:
