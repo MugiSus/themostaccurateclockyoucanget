@@ -10,7 +10,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 
 export default function Home() {
 
-    const requestAddress = 'http://worldtimeapi.org/api/timezone/Etc/GMT';
+    const requestAddress = 'https://worldtimeapi.org/api/timezone/Etc/GMT';
     const geolocateInterval = 5000;
     const requestServerTimestampInterval = 30000;
     const timeZoneOffset = new Date().getTimezoneOffset() * 60000;
