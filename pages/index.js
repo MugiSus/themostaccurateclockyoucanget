@@ -11,7 +11,10 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 export default function Home() {
 
     const requestAddress = 'http://worldtimeapi.org/api/timezone/Etc/GMT';
+    const geolocateInterval = 5000;
+    const requestServerTimestampInterval = 30000;
     const timeZoneOffset = new Date().getTimezoneOffset() * 60000;
+
     const indicatorAniamtion = [
         [{ opacity: 1 }, { opacity: 0.2 }],
         { duration: 2500, easing: 'cubic-bezier(0.1, 0.5, 0.25, 1)' }
@@ -21,9 +24,10 @@ export default function Home() {
     let localTimeDifference = 0;
     let calculatedLongitudeTimeDifference = 0;
     let lastCoordinates = null;
-    let timeRequestSent = null;
 
     const requestServerTimestamp = async () => {
+        let timeRequestSent = performance.now();
+
         const res = await fetch(requestAddress);
         const json = await res.json();
         const serverTimestamp = new Date(json.datetime).getTime();
@@ -59,9 +63,9 @@ export default function Home() {
                 
                 if (!lastCoordinates) {
                     indicatorElements[1].animate(...indicatorAniamtion);
-                    timeRequestSent = performance.now();
                     requestServerTimestamp();
-                } else if (lastCoordinates.longitude !== longitude) {
+                    setInterval(requestServerTimestamp, requestServerTimestampInterval);
+                } else if (lastCoordinates.longitude !== longitude || lastCoordinates.latitude !== latitude) {
                     indicatorElements[1].animate(...indicatorAniamtion);
                 }
                 lastCoordinates = {latitude, longitude};
@@ -69,7 +73,7 @@ export default function Home() {
         };
 
         geolocate();
-        setInterval(geolocate, 5000);
+        setInterval(geolocate, geolocateInterval);
 
         const updateTimeText = () => {
             const now = Date.now();
