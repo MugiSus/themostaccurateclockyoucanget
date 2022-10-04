@@ -37,7 +37,10 @@ export default function Home() {
         const geolocate = () => {
             navigator.geolocation.getCurrentPosition((position) => {
                 [latitude, longitude] = [position.coords.latitude, position.coords.longitude];
+                // example coordinates (根室)
                 // [latitude, longitude] = [40.26760178, 140.93550375];
+                // example coordinates (那覇)
+                // [latitude, longitude] = [26.21240044, 127.6809998];
 
                 calculatedLongitudeTimeDifference = longitude / 15 * 60 * 60 * 1000;
                 codeElements[0].textContent = `${latitude}, ${longitude}`;
