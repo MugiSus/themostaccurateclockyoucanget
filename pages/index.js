@@ -9,11 +9,14 @@ import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 
 export default function Home() {
+
+    const requestAddress = 'http://worldtimeapi.org/api/timezone/Etc/GMT';
     const timeZoneOffset = new Date().getTimezoneOffset() * 60000;
     const indicatorAniamtion = [
         [{ opacity: 1 }, { opacity: 0.2 }],
         { duration: 2500, easing: 'cubic-bezier(0.1, 0.5, 0.25, 1)' }
     ];
+
     let latitude, longitude;
     let localTimeDifference = 0;
     let calculatedLongitudeTimeDifference = 0;
@@ -21,12 +24,17 @@ export default function Home() {
     let timeRequestSent = null;
 
     const requestServerTimestamp = async () => {
-        const res = await fetch('http://worldtimeapi.org/api/timezone/Etc/GMT');
+        const res = await fetch(requestAddress);
         const json = await res.json();
         const serverTimestamp = new Date(json.datetime).getTime();
         
         const requestTime = performance.now() - timeRequestSent;
         localTimeDifference = serverTimestamp - Date.now() + requestTime / 2;
+
+        if (res.status >= 400)
+            throw Error(json.message);
+
+        console.log(`A request to ${requestAddress} has been done properly; took ${requestTime}ms`);
         
         return serverTimestamp;
     };
@@ -40,9 +48,9 @@ export default function Home() {
         const geolocate = () => {
             navigator.geolocation.getCurrentPosition((position) => {
                 [latitude, longitude] = [position.coords.latitude, position.coords.longitude];
-                // example coordinates (根室)
+                // // example coordinates (根室)
                 // [latitude, longitude] = [40.26760178, 140.93550375];
-                // example coordinates (那覇)
+                // // example coordinates (那覇)
                 // [latitude, longitude] = [26.21240044, 127.6809998];
 
                 calculatedLongitudeTimeDifference = longitude / 15 * 60 * 60 * 1000;
