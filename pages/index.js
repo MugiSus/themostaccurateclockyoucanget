@@ -82,9 +82,8 @@ export default function Home() {
             requestAnimationFrame(updateTimeText);
         }
         updateTimeText();
-
         
-        // init
+        // three.js
         const camera = new THREE.PerspectiveCamera(90);
         camera.position.set(0, 0, 2);
         camera.lookAt(0, 0, 0);
@@ -164,26 +163,34 @@ export default function Home() {
                     The Most Accurate Clock You Can Get
                 </h1>
 
-                <p className={styles.description}>
-                    <span className={styles.topicBlock}>
-                        <span className={styles.indicator}></span>
-                        Your coordinates:
-                    </span>
-                    <code className={styles.code}>locating...</code><br />
-                    <span className={styles.topicBlock}>
-                        Your inaccurate clock:
-                    </span>
-                    <code className={styles.code}>...</code><br />
-                    <span className={styles.topicBlock}>
-                        Your most accurate clock:
-                    </span>
-                    <code className={styles.code}>...</code><br />
-                    <span className={styles.topicBlock}>
-                        <span className={styles.indicator}></span>
-                        Difference:
-                    </span>
-                    <code className={styles.code}>...</code>
-                </p>
+                <div className={styles.description}>
+                    <div className={styles.topicContainer}>
+                        <span className={styles.topicTitle}>
+                            <span className={styles.indicator}></span>
+                            Your coordinates:
+                        </span>
+                        <code className={styles.code}>locating...</code>
+                    </div>
+                    <div className={styles.topicContainer}>
+                        <span className={styles.topicTitle}>
+                            Your inaccurate clock:
+                        </span>
+                        <code className={styles.code}>...</code>
+                    </div>
+                    <div className={styles.topicContainer}>
+                        <span className={styles.topicTitle}>
+                            Your most accurate clock:
+                        </span>
+                        <code className={styles.code}>...</code>
+                    </div>
+                    <div className={styles.topicContainer}>
+                        <span className={styles.topicTitle}>
+                            <span className={styles.indicator}></span>
+                            Difference:
+                        </span>
+                        <code className={styles.code}>...</code>
+                    </div>
+                </div>
             </main>
 
             <canvas className={styles.canvas}></canvas>
