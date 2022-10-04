@@ -11,12 +11,11 @@ import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 
 export default function Home() {
-
     const timeZoneOffset = new Date().getTimezoneOffset() * 60000;
     const indicatorAniamtion = [
         [{ opacity: 1 }, { opacity: 0.2 }],
         { duration: 2500, easing: 'cubic-bezier(0.1, 0.5, 0.25, 1)' }
-    ]
+    ];
     let latitude, longitude;
     let localTimeDifference = 0;
     let calculatedLongitudeTimeDifference = 0;
@@ -61,8 +60,9 @@ export default function Home() {
         const geolocate = () => {
             navigator.geolocation.getCurrentPosition((position) => {
                 [latitude, longitude] = [position.coords.latitude, position.coords.longitude];
+                // [latitude, longitude] = [40.26760178, 140.93550375];
 
-                calculatedLongitudeTimeDifference = longitude / 15 * 1000 * 60 * 60;
+                calculatedLongitudeTimeDifference = longitude / 15 * 60 * 60 * 1000;
                 codeElements[1].textContent = `${latitude}, ${longitude}`;
                 indicatorElements[0].animate(...indicatorAniamtion);
                 
