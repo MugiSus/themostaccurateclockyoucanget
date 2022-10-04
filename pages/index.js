@@ -31,14 +31,15 @@ export default function Home() {
         const res = await fetch(requestAddress);
         const json = await res.json();
         const serverTimestamp = new Date(json.datetime).getTime();
+        const status = res.status;
         
         const requestTime = performance.now() - timeRequestSent;
         localTimeDifference = serverTimestamp - Date.now() + requestTime / 2;
 
-        if (res.status >= 400)
+        if (status >= 400)
             throw Error(json.message);
 
-        console.log(`A request to ${requestAddress} has been done properly; took ${requestTime}ms`);
+        console.log(`A request to ${requestAddress} has been done properly (${status}); took ${requestTime}ms`);
         
         return serverTimestamp;
     };
