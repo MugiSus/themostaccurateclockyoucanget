@@ -12,7 +12,7 @@ export default function Home() {
 
     const requestAddress = 'https://worldtimeapi.org/api/timezone/Etc/GMT';
     const geolocateInterval = 5000;
-    const requestServerTimestampInterval = 30000;
+    const requestServerTimestampInterval = 60000;
     const timeZoneOffset = new Date().getTimezoneOffset() * 60000;
 
     const indicatorAniamtion = [
