@@ -64,7 +64,6 @@ export default function Home() {
                 if (!lastCoordinates) {
                     indicatorElements[1].animate(...indicatorAniamtion);
                     requestServerTimestamp();
-                    setInterval(requestServerTimestamp, requestServerTimestampInterval);
                 } else if (lastCoordinates.longitude !== longitude || lastCoordinates.latitude !== latitude) {
                     indicatorElements[1].animate(...indicatorAniamtion);
                 }
@@ -74,6 +73,7 @@ export default function Home() {
 
         geolocate();
         setInterval(geolocate, geolocateInterval);
+        setInterval(requestServerTimestamp, requestServerTimestampInterval);
 
         const updateTimeText = () => {
             const now = Date.now();
