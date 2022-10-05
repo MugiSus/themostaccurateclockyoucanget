@@ -27,7 +27,7 @@ export default function Home() {
     const requestServerTimestamp = async () => {
         const timeRequestSent = performance.now();
 
-        const worldTimestamp = await getWorldTimestamp('Etc/GMT');
+        const worldTimestamp = await getWorldTimestamp();
         const timestampMilliseconds = new Date(worldTimestamp).getTime();
 
         const requestTime = performance.now() - timeRequestSent;
