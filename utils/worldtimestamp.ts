@@ -1,8 +1,8 @@
 import fetch from 'isomorphic-unfetch';
 
 const getWorldTimestamp = async (timezone: string = 'Etc/GMT'): Promise<number> => {
-    const res = await fetch(`https://worldtimeapi.org/api/timezone/${timezone}`);
-    const json = await res.json();
+    const res: Response = await fetch(`https://worldtimeapi.org/api/timezone/${timezone}`);
+    const json: any = await res.json();
 
     const status: number = res.status;
 
