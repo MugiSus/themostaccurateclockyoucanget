@@ -33,7 +33,7 @@ export default function Home() {
         const requestTime = performance.now() - timeRequestSent;
         localTimeDifference = timestampMilliseconds - Date.now() + requestTime / 2;
 
-        console.log(`request to https://worldtimeapi.org/api/timezone/Etc/GMT took ${requestTime}ms`);
+        console.log(`A request sent to https://worldtimeapi.org/api/timezone/Etc/GMT took ${requestTime}ms`);
         
         return timestampMilliseconds;
     };
