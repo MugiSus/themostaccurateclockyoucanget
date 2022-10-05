@@ -11,7 +11,7 @@ const getWorldTimestamp = async (timezone: string = 'Etc/GMT'): Promise<number> 
 
     const datetime: string = json.datetime;
 
-    const nanoseconds: number = json.datetime.match(/\.\d{3}(\d*?)\+/)[1] * 1;
+    const nanoseconds: number = +json.datetime.match(/\.\d{3}(\d*?)\+/)[1];
     const serverTimestamp: number = new Date(datetime).getTime() + nanoseconds / 1000;
 
     return serverTimestamp;
