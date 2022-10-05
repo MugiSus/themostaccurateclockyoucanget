@@ -4,13 +4,12 @@ import Image from 'next/image'
 import styles from '../styles/Home.module.scss'
 import { format } from 'date-fns'
 import { useEffect } from 'react';
-import fetch from 'isomorphic-unfetch';
+import getWorldTimestamp from '../utils/worldtimestamp';
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 
 export default function Home() {
 
-    const requestAddress = 'https://worldtimeapi.org/api/timezone/Etc/GMT';
     const geolocateInterval = 5000;
     const requestServerTimestampInterval = 60000;
     const timeZoneOffset = new Date().getTimezoneOffset() * 60000;
@@ -28,20 +27,15 @@ export default function Home() {
     const requestServerTimestamp = async () => {
         const timeRequestSent = performance.now();
 
-        const res = await fetch(requestAddress);
-        const json = await res.json();
-        const serverTimestamp = new Date(json.datetime).getTime();
-        const status = res.status;
-        
+        const worldTimestamp = await getWorldTimestamp('Etc/GMT');
+        const timestampMilliseconds = new Date(worldTimestamp).getTime();
+
         const requestTime = performance.now() - timeRequestSent;
-        localTimeDifference = serverTimestamp - Date.now() + requestTime / 2;
+        localTimeDifference = timestampMilliseconds - Date.now() + requestTime / 2;
 
-        if (status >= 400)
-            throw Error(json.message);
-
-        console.log(`A request to ${requestAddress} has been done properly (${status}); took ${requestTime}ms`);
+        console.log(`request to https://worldtimeapi.org/api/timezone/Etc/GMT took ${requestTime}ms`);
         
-        return serverTimestamp;
+        return timestampMilliseconds;
     };
 
     useEffect(() => {
