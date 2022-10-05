@@ -4,7 +4,7 @@ import Image from 'next/image'
 import styles from '../styles/Home.module.scss'
 import { format } from 'date-fns'
 import { useEffect } from 'react';
-import getWorldTimestamp from '../utils/worldtimestamp';
+import getWorldTimestamp from '../utils/worldtimestamp.ts';
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 
