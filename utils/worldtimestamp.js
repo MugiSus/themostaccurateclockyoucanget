@@ -1,11 +1,11 @@
 import fetch from 'isomorphic-unfetch';
 
-const getWorldTimestamp = async (timezone) => {
+const getWorldTimestamp = async (timezone = 'Etc/GMT') => {
     const res = await fetch(`https://worldtimeapi.org/api/timezone/${timezone}`);
     const json = await res.json();
 
     const status = res.status;
-    
+
     if (status >= 400)
         throw Error(json.message);
 
