@@ -54,10 +54,9 @@ export default function Home() {
                 codeElements[0].textContent = `${latitude}, ${longitude}`;
                 indicatorElements[0].animate(...indicatorAniamtion);
                 
-                if (!lastCoordinates) {
-                    indicatorElements[1].animate(...indicatorAniamtion);
-                    requestServerTimestamp();
-                } else if (lastCoordinates.longitude !== longitude || lastCoordinates.latitude !== latitude) {
+                if (!lastCoordinates || lastCoordinates.longitude !== longitude || lastCoordinates.latitude !== latitude) {
+                    if (!lastCoordinates)
+                        requestServerTimestamp();
                     indicatorElements[1].animate(...indicatorAniamtion);
                 }
                 lastCoordinates = {latitude, longitude};
