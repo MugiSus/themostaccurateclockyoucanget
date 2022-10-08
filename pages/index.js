@@ -28,14 +28,12 @@ export default function Home() {
         const timeRequestSent = performance.now();
 
         const worldTimestamp = await getWorldTimestamp();
-        const timestampMilliseconds = new Date(worldTimestamp).getTime();
-
+        
         const requestTime = performance.now() - timeRequestSent;
-        localTimeDifference = timestampMilliseconds - Date.now() + requestTime / 2;
+        const timestampMilliseconds = worldTimestamp + requestTime / 2;
+        localTimeDifference = timestampMilliseconds - Date.now();
 
         console.log(`A request sent to https://worldtimeapi.org/api/timezone/Etc/GMT took ${requestTime}ms`);
-        
-        return timestampMilliseconds;
     };
 
     useEffect(() => {

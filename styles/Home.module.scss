@@ -27,38 +27,37 @@
 	margin: 4rem 0;
 	line-height: 1.6;
 	font-size: 1.4rem;
-
-    .topicContainer {
-        margin: 0.4rem;
-
-        .indicator {
-            display: inline-flex;
-            justify-content: center;
-            width: 0.5rem;
-            height: 0.5rem;
-            margin: 0.25rem;
-            margin-right: 0.5rem;
-            border-radius: 50%;
-            background-color: #ffa91f;
-            opacity: 0.2;
-        }
-
-        .topicTitle {
-            display: inline-block;
-        }
-
-        .code {
-            display: inline-block;
-            background: #10101008;
-            border-radius: 0.2rem;
-            margin: 0 0.4rem;
-            padding: 0.2rem 0.8rem;
-            font-size: 1.5rem;
-            font-family: Inconsolata, monospace;
-        }
-    }
 }
 
+.topicContainer {
+    margin: 0.4rem;
+
+    .indicator {
+        display: inline-flex;
+        justify-content: center;
+        width: 0.5rem;
+        height: 0.5rem;
+        margin: 0.25rem;
+        margin-right: 0.5rem;
+        border-radius: 50%;
+        background-color: #ffa91f;
+        opacity: 0.2;
+    }
+
+    .topicTitle {
+        display: inline-block;
+    }
+
+    .code {
+        display: inline-block;
+        background: #10101008;
+        border-radius: 0.2rem;
+        margin: 0 0.4rem;
+        padding: 0.2rem 0.8rem;
+        font-size: 1.5rem;
+        font-family: Inconsolata, monospace;
+    }
+}
 
 .canvas {
     position: fixed;
@@ -81,14 +80,12 @@
     .canvas {
         opacity: 0.4;
     }
-    .description {
-        .topicContainer {
-            .code {
-                background: #fafafa10;
-            }
-            .indicator {
-                background-color: #fac060;
-            }
+    .topicContainer {
+        .code {
+            background: #fafafa10;
+        }
+        .indicator {
+            background-color: #fac060;
         }
     }
 }
