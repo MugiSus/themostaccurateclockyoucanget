@@ -54,11 +54,11 @@ export default function Home() {
                 codeElements[0].textContent = `${latitude}, ${longitude}`;
                 indicatorElements[0].animate(...indicatorAniamtion);
                 
-                if (!lastCoordinates || lastCoordinates.longitude !== longitude || lastCoordinates.latitude !== latitude) {
-                    if (!lastCoordinates)
-                        requestServerTimestamp();
+                if (!lastCoordinates)
+                    requestServerTimestamp();
+                if (!lastCoordinates || lastCoordinates.longitude !== longitude || lastCoordinates.latitude !== latitude)
                     indicatorElements[1].animate(...indicatorAniamtion);
-                }
+                
                 lastCoordinates = {latitude, longitude};
             }, (error) => console.log(error));
         };
