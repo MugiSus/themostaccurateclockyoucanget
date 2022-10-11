@@ -54,10 +54,10 @@ export default function Home() {
                 codeElements[0].textContent = `${latitude}, ${longitude}`;
                 indicatorElements[0].animate(...indicatorAniamtion);
                 
-                if (!lastCoordinates)
-                    requestServerTimestamp();
                 if (!lastCoordinates || lastCoordinates.longitude !== longitude || lastCoordinates.latitude !== latitude)
                     indicatorElements[1].animate(...indicatorAniamtion);
+                if (!lastCoordinates)
+                    requestServerTimestamp();
                 
                 lastCoordinates = {latitude, longitude};
             }, (error) => console.log(error));
@@ -109,7 +109,7 @@ export default function Home() {
             const rad = time / 20000 * Math.PI / 2;
             stage.quaternion.setFromAxisAngle(axisVector, rad);
 
-            renderer.render( scene, camera );
+            renderer.render(scene, camera);
         }
         renderer.setAnimationLoop(animate);
         
