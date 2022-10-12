@@ -154,7 +154,7 @@ export default function Home() {
                 </title>
                 <meta
                     name="description"
-                    content="i assume"
+                    content="um i assume"
                 />
                 <link
                     rel="icon"
