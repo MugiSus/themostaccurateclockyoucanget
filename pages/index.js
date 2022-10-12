@@ -149,9 +149,17 @@ export default function Home() {
     return (
         <div className={styles.container}>
             <Head>
-                <title>themostaccurateclockyoucanget.com</title>
-                <meta name="description" content="um i assume" />
-                <link rel="icon" href="/favicon.ico" />
+                <title>
+                    themostaccurateclockyoucanget.com
+                </title>
+                <meta
+                    name="description"
+                    content="i assume"
+                />
+                <link
+                    rel="icon"
+                    href="/favicon.ico"
+                />
             </Head>
 
             <main className={styles.main}>
