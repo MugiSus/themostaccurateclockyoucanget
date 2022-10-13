@@ -30,7 +30,7 @@ export default function Home() {
         const worldTimestamp = await getWorldTimestamp();
         
         const requestTime = performance.now() - timeRequestSent;
-        const timestampMilliseconds = worldTimestamp.timestamp + requestTime / 2;
+        const timestampMilliseconds = worldTimestamp.milliseconds + requestTime / 2;
         localTimeDifference = timestampMilliseconds - Date.now();
 
         console.log(`A request sent to https://worldtimeapi.org/api/timezone/Etc/GMT took ${requestTime}ms`);

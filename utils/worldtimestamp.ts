@@ -20,11 +20,13 @@ interface DateTimeJsonResponse {
 
 interface WorldTimestamp {
     response: DateTimeJsonResponse;
-    timestamp: number;
-    utcTimestamp: number;
+    microseconds: number;
+    utcMicroseconds: number;
+    milliseconds: number;
+    utcMilliseconds: number;
 }
 
-const worldTimestamp = async (timezone: string = 'Etc/GMT'): Promise<WorldTimestamp> => {
+const worldTimestamp = async (timezone: string = 'Etc/UTC'): Promise<WorldTimestamp> => {
     const res: Response = await fetch(`https://worldtimeapi.org/api/timezone/${timezone}`);
     const json: DateTimeJsonResponse = await res.json();
 
@@ -35,14 +37,16 @@ const worldTimestamp = async (timezone: string = 'Etc/GMT'): Promise<WorldTimest
 
     const utcDatetime = json.utc_datetime;
 
-    const microseconds = +utcDatetime.match(/\.\d{3}(\d*?)\+/)![1];
-    const utcTimestamp = new Date(utcDatetime).getTime() + microseconds / 1000;
-    const timestamp = utcTimestamp + json.raw_offset * 1000;
+    const datetimeMicrosecond = +utcDatetime.match(/\.\d{3}(\d*?)\+/)![1];
+    const utcMicroseconds = new Date(utcDatetime).getTime() * 1000 + datetimeMicrosecond;
+    const microseconds = utcMicroseconds + json.raw_offset * 1000000;
 
     return {
         response: json,
-        timestamp: timestamp,
-        utcTimestamp: utcTimestamp,
+        microseconds: microseconds,
+        utcMicroseconds: utcMicroseconds,
+        milliseconds: microseconds / 1000,
+        utcMilliseconds: utcMicroseconds / 1000,
     };
 }
 
