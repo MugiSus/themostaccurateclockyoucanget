@@ -1846,6 +1846,13 @@ word-wrap@^1.2.3:
   resolved "https://registry.npmjs.org/word-wrap/-/word-wrap-1.2.3.tgz"
   integrity sha512-Hz/mrNwitNRh/HUAtM/VT/5VH+ygD6DV7mYKZAtHOrbs8U7lvPS6xf7EJKMF0uW1KJCl0H701g3ZGus+muE5vQ==
 
+world-timestamp@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/world-timestamp/-/world-timestamp-1.0.1.tgz#7518403027baf860ebd047d47b16e2ed828ec51e"
+  integrity sha512-58J4IcUysgw6u4XK64lHC/ipPCJ8gafete1N7IvP/GeVho5hNU52Fh4u8OxY05TLP+eDntdL8t/+EOsbOF9FrA==
+  dependencies:
+    typescript "^4.8.4"
+
 wrappy@1:
   version "1.0.2"
   resolved "https://registry.npmjs.org/wrappy/-/wrappy-1.0.2.tgz"

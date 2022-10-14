@@ -4,7 +4,7 @@ import Image from 'next/image'
 import styles from '../styles/Home.module.scss'
 import { format } from 'date-fns'
 import { useEffect } from 'react';
-import worldTimestamp from '../utils/worldtimestamp.ts';
+import worldTimestamp from 'world-timestamp'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 
@@ -27,13 +27,14 @@ export default function Home() {
     const requestServerTimestamp = async () => {
         const timeRequestSent = performance.now();
 
-        const timestamp = await worldTimestamp();
+        const timestamp = await worldTimestamp(); // "Etc/UTC"
         
         const requestTime = performance.now() - timeRequestSent;
+        console.log(`A request sent to https://worldtimeapi.org/api/timezone/Etc/GMT took ${requestTime}ms.`);
+        console.log(timestamp.response);
+
         const timestampMilliseconds = timestamp.milliseconds + requestTime / 2;
         localTimeDifference = timestampMilliseconds - Date.now();
-
-        console.log(`A request sent to https://worldtimeapi.org/api/timezone/Etc/GMT took ${requestTime}ms`);
     };
 
     useEffect(() => {
