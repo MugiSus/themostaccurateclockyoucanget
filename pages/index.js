@@ -81,8 +81,8 @@ export default function Home() {
         updateTimeText();
         
         // three.js
-        const camera = new THREE.PerspectiveCamera(90);
-        camera.position.set(0, 0, 2);
+        const camera = new THREE.PerspectiveCamera(75);
+        camera.position.set(0, 0, 2.5);
         camera.lookAt(0, 0, 0);
 
         const scene = new THREE.Scene();
@@ -101,7 +101,9 @@ export default function Home() {
         resize();
         
         const stage = new THREE.Object3D();
+        const background = new THREE.Object3D();
         scene.add(stage);
+        scene.add(background);
 
         const axisAngle = 23.4 * Math.PI / 180;
         const axisVector = new THREE.Vector3(Math.sin(axisAngle), Math.cos(axisAngle), 0);
@@ -109,6 +111,7 @@ export default function Home() {
         const animate = (time) => {
             const rad = time / 20000 * Math.PI / 2;
             stage.quaternion.setFromAxisAngle(axisVector, rad);
+            background.quaternion.setFromAxisAngle(axisVector, rad * 0.8);
 
             renderer.render(scene, camera);
         }
@@ -124,7 +127,14 @@ export default function Home() {
                 icosphere.material = new THREE.MeshNormalMaterial({
                     wireframe: true,
                 });
-                stage.add(icosphere);
+                stage.add(icosphere.clone());
+
+                icosphere.scale.set(5, 5, 5);
+                icosphere.material = new THREE.MeshBasicMaterial({
+                    color: 0x606060,
+                    wireframe: true,
+                });
+                background.add(icosphere.clone());
 
                 // const icospherePointsMaterial = new THREE.PointsMaterial({
                 //     sizeAttenuation: true,
