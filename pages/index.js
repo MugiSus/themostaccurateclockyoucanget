@@ -129,9 +129,9 @@ export default function Home() {
                 });
                 stage.add(icosphere.clone());
 
-                icosphere.scale.set(5, 5, 5);
+                icosphere.scale.set(3, 3, 3);
                 icosphere.material = new THREE.MeshBasicMaterial({
-                    color: 0x606060,
+                    color: 0x808080,
                     wireframe: true,
                 });
                 background.add(icosphere.clone());
