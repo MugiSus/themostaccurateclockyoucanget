@@ -131,10 +131,10 @@ export default function Home() {
 
                 icosphere.scale.set(2.5, 2.5, 2.5);
                 icosphere.material = new THREE.MeshBasicMaterial({
-                    color: 0x808080,
+                    color: 0xb0b0b0,
                     wireframe: true,
                     transparent: true,
-                    opacity: 0.3,
+                    opacity: 0.4,
                 });
                 background.add(icosphere.clone());
 
