@@ -134,7 +134,7 @@ export default function Home() {
                     color: 0x808080,
                     wireframe: true,
                     transparent: true,
-                    opacity: 0.4,
+                    opacity: 0.3,
                 });
                 background.add(icosphere.clone());
 
