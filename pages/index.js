@@ -47,9 +47,9 @@ export default function Home() {
             navigator.geolocation.getCurrentPosition((position) => {
                 [latitude, longitude] = [position.coords.latitude, position.coords.longitude];
                 // // example coordinates (根室)
-                // [latitude, longitude] = [43.33020420776925, 145.58282070797955];
+                // [latitude, longitude] = [43.3302042, 145.5828207];
                 // // example coordinates (那覇)
-                // [latitude, longitude] = [26.212162826250317, 127.67915499549518];
+                // [latitude, longitude] = [26.2121628, 127.6791549];
 
                 calculatedLongitudeTimeDifference = longitude / 15 * 60 * 60 * 1000;
                 codeElements[0].textContent = `${latitude}, ${longitude}`;
