@@ -129,12 +129,12 @@ export default function Home() {
                 });
                 stage.add(icosphere.clone());
 
-                icosphere.scale.set(2.5, 2.5, 2.5);
+                icosphere.scale.set(4, 4, 4);
                 icosphere.material = new THREE.MeshBasicMaterial({
-                    color: 0xb0b0b0,
+                    color: 0x808080,
                     wireframe: true,
                     transparent: true,
-                    opacity: 0.4,
+                    opacity: 0.25,
                 });
                 background.add(icosphere.clone());
 
