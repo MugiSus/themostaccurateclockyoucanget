@@ -3,12 +3,19 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.scss'
 import { format } from 'date-fns'
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import worldTimestamp from 'world-timestamp'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 
 export default function Home() {
+
+    const [
+        [coordinates, setCoordinates],
+        [innacurateClock, setInnacurateClock],
+        [accurateClock, setAccurateClock],
+        [difference, setDifference]
+    ] = [useState('Locating...'), useState('...'), useState('...'), useState('...')];
 
     const geolocateInterval = 5000;
     const requestServerTimestampInterval = 60000;
@@ -37,47 +44,47 @@ export default function Home() {
         localTimeDifference = timestampMilliseconds - Date.now();
     };
 
+    const updateTimeText = () => {
+        const now = Date.now();
+        const calculatedDate = now + localTimeDifference + timeZoneOffset + calculatedLongitudeTimeDifference;
+
+        setInnacurateClock(format(now, 'yyyy/MM/dd HH:mm:ss.SSS'));
+        setAccurateClock(format(calculatedDate, 'yyyy/MM/dd HH:mm:ss.SSS'));
+        setDifference((now > calculatedDate ? "-" : "+") + format(Math.abs(now - calculatedDate) + timeZoneOffset, 'HH:mm:ss.SSS'));
+
+        requestAnimationFrame(updateTimeText);
+    }
+
+    const geolocate = () => {
+        navigator.geolocation.getCurrentPosition((position) => {
+            [latitude, longitude] = [position.coords.latitude, position.coords.longitude];
+            // // example coordinates (根室)
+            // [latitude, longitude] = [43.3302042, 145.5828207];
+            // // example coordinates (那覇)
+            // [latitude, longitude] = [26.2121628, 127.6791549];
+            
+            calculatedLongitudeTimeDifference = longitude / 15 * 60 * 60 * 1000;
+            setCoordinates(`${latitude}, ${longitude}`);
+            
+            const indicatorElements = document.getElementsByClassName(styles.indicator);
+            indicatorElements[0]?.animate(...indicatorAniamtion);
+
+            if (!lastCoordinates || lastCoordinates.longitude !== longitude || lastCoordinates.latitude !== latitude)
+                indicatorElements[1]?.animate(...indicatorAniamtion);
+            if (!lastCoordinates)
+                requestServerTimestamp();
+            
+            lastCoordinates = {latitude, longitude};
+        }, (error) => console.log(error));
+    };
+
     useEffect(() => {
         if (typeof window === 'undefined') return;
-
-        const codeElements = document.getElementsByClassName(styles.code);
-        const indicatorElements = document.getElementsByClassName(styles.indicator);
-        
-        const geolocate = () => {
-            navigator.geolocation.getCurrentPosition((position) => {
-                [latitude, longitude] = [position.coords.latitude, position.coords.longitude];
-                // // example coordinates (根室)
-                // [latitude, longitude] = [43.3302042, 145.5828207];
-                // // example coordinates (那覇)
-                // [latitude, longitude] = [26.2121628, 127.6791549];
-
-                calculatedLongitudeTimeDifference = longitude / 15 * 60 * 60 * 1000;
-                codeElements[0].textContent = `${latitude}, ${longitude}`;
-                indicatorElements[0].animate(...indicatorAniamtion);
-                
-                if (!lastCoordinates || lastCoordinates.longitude !== longitude || lastCoordinates.latitude !== latitude)
-                    indicatorElements[1].animate(...indicatorAniamtion);
-                if (!lastCoordinates)
-                    requestServerTimestamp();
-                
-                lastCoordinates = {latitude, longitude};
-            }, (error) => console.log(error));
-        };
 
         geolocate();
         setInterval(geolocate, geolocateInterval);
         setInterval(requestServerTimestamp, requestServerTimestampInterval);
 
-        const updateTimeText = () => {
-            const now = Date.now();
-            const calculatedDate = now + localTimeDifference + timeZoneOffset + calculatedLongitudeTimeDifference;
-
-            codeElements[1].textContent = format(now, 'yyyy/MM/dd HH:mm:ss.SSS');
-            codeElements[2].textContent = format(calculatedDate, 'yyyy/MM/dd HH:mm:ss.SSS');
-            codeElements[3].textContent = (now > calculatedDate ? "-" : "+") + format(Math.abs(now - calculatedDate) + timeZoneOffset, 'HH:mm:ss.SSS');
-
-            requestAnimationFrame(updateTimeText);
-        }
         updateTimeText();
         
         // three.js
@@ -186,26 +193,26 @@ export default function Home() {
                             <span className={styles.indicator}></span>
                             Your coordinates:
                         </span>
-                        <code className={styles.code}>locating...</code>
+                        <code className={styles.code}>{coordinates}</code>
                     </div>
                     <div className={styles.topicContainer}>
                         <span className={styles.topicTitle}>
                             Your inaccurate clock:
                         </span>
-                        <code className={styles.code}>...</code>
+                        <code className={styles.code}>{innacurateClock}</code>
                     </div>
                     <div className={styles.topicContainer}>
                         <span className={styles.topicTitle}>
                             Your most accurate clock:
                         </span>
-                        <code className={styles.code}>...</code>
+                        <code className={styles.code}>{accurateClock}</code>
                     </div>
                     <div className={styles.topicContainer}>
                         <span className={styles.topicTitle}>
                             <span className={styles.indicator}></span>
                             Difference:
                         </span>
-                        <code className={styles.code}>...</code>
+                        <code className={styles.code}>{difference}</code>
                     </div>
                 </div>
             </main>
