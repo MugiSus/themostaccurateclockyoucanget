@@ -66,8 +66,7 @@ export default function Home() {
             calculatedLongitudeTimeDifference = longitude / 15 * 60 * 60 * 1000;
             setCoordinates(`${latitude}, ${longitude}`);
             
-            const indicatorElements = document.getElementsByClassName(styles.indicator);
-            indicatorElements[0]?.animate(...indicatorAniamtion);
+            document.getElementsByClassName(styles.indicator)[0]?.animate(...indicatorAniamtion);
 
             if (!lastCoordinates)
                 requestServerTimestamp();
