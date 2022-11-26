@@ -8,6 +8,20 @@ import worldTimestamp from 'world-timestamp'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 
+const geolocateInterval = 5000;
+const requestServerTimestampInterval = 60000;
+const timeZoneOffset = new Date().getTimezoneOffset() * 60000;
+
+const indicatorAniamtion = [
+    [{ opacity: 1 }, { opacity: 0.2 }],
+    { duration: 2500, easing: 'cubic-bezier(0.1, 0.5, 0.25, 1)' }
+];
+
+let latitude, longitude;
+let localTimeDifference = 0;
+let calculatedLongitudeTimeDifference = 0;
+let lastCoordinates = null;
+
 export default function Home() {
 
     const [
@@ -16,20 +30,6 @@ export default function Home() {
         [accurateClock, setAccurateClock],
         [difference, setDifference]
     ] = [useState('Locating...'), useState('...'), useState('...'), useState('...')];
-
-    const geolocateInterval = 5000;
-    const requestServerTimestampInterval = 60000;
-    const timeZoneOffset = new Date().getTimezoneOffset() * 60000;
-
-    const indicatorAniamtion = [
-        [{ opacity: 1 }, { opacity: 0.2 }],
-        { duration: 2500, easing: 'cubic-bezier(0.1, 0.5, 0.25, 1)' }
-    ];
-
-    let latitude, longitude;
-    let localTimeDifference = 0;
-    let calculatedLongitudeTimeDifference = 0;
-    let lastCoordinates = null;
 
     const requestServerTimestamp = async () => {
         const timeRequestSent = performance.now();
