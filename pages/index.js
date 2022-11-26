@@ -69,8 +69,6 @@ export default function Home() {
             const indicatorElements = document.getElementsByClassName(styles.indicator);
             indicatorElements[0]?.animate(...indicatorAniamtion);
 
-            if (!lastCoordinates || lastCoordinates.longitude !== longitude || lastCoordinates.latitude !== latitude)
-                indicatorElements[1]?.animate(...indicatorAniamtion);
             if (!lastCoordinates)
                 requestServerTimestamp();
             
@@ -209,7 +207,6 @@ export default function Home() {
                     </div>
                     <div className={styles.topicContainer}>
                         <span className={styles.topicTitle}>
-                            <span className={styles.indicator}></span>
                             Difference:
                         </span>
                         <code className={styles.code}>{difference}</code>
