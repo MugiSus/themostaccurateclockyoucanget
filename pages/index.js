@@ -20,7 +20,7 @@ const indicatorAniamtion = [
 let latitude, longitude;
 let localTimeDifference = 0;
 let calculatedLongitudeTimeDifference = 0;
-let lastCoordinates = null;
+let alreadyGeolocated = false;
 
 export default function Home() {
 
@@ -46,7 +46,7 @@ export default function Home() {
 
     const updateTimeText = () => {
         const now = Date.now();
-        const calculatedDate = now + localTimeDifference + timeZoneOffset + calculatedLongitudeTimeDifference;
+        const calculatedDate = alreadyGeolocated ? now + localTimeDifference + timeZoneOffset + calculatedLongitudeTimeDifference : now;
 
         setInnacurateClock(format(now, 'yyyy/MM/dd HH:mm:ss.SSS'));
         setAccurateClock(format(calculatedDate, 'yyyy/MM/dd HH:mm:ss.SSS'));
@@ -63,15 +63,15 @@ export default function Home() {
             // // example coordinates (那覇)
             // [latitude, longitude] = [26.2121628, 127.6791549];
             
+            document.getElementsByClassName(styles.indicator)[0]?.animate(...indicatorAniamtion);
+            
             calculatedLongitudeTimeDifference = longitude / 15 * 60 * 60 * 1000;
             setCoordinates(`${latitude}, ${longitude}`);
             
-            document.getElementsByClassName(styles.indicator)[0]?.animate(...indicatorAniamtion);
-
-            if (!lastCoordinates)
+            if (!alreadyGeolocated)
                 requestServerTimestamp();
             
-            lastCoordinates = {latitude, longitude};
+            alreadyGeolocated = true;
         }, (error) => console.log(error));
     };
 
