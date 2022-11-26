@@ -121,44 +121,22 @@ export default function Home() {
         }
         renderer.setAnimationLoop(animate);
         
-        const gltfLoader = new GLTFLoader();
-        gltfLoader.load(
-            '/icosphere_earth.glb',
-            (gltf) => {
-                const icosphere = gltf.scene.children[0];
-
-                icosphere.scale.set(1, 1, 1);
-                icosphere.material = new THREE.MeshNormalMaterial({
-                    wireframe: true,
-                });
-                stage.add(icosphere.clone());
-
-                icosphere.scale.set(4, 4, 4);
-                icosphere.material = new THREE.MeshBasicMaterial({
-                    color: 0x606060,
-                    wireframe: true,
-                    transparent: true,
-                    opacity: 0.4,
-                });
-                background.add(icosphere.clone());
-
-                // const icospherePointsMaterial = new THREE.PointsMaterial({
-                //     sizeAttenuation: true,
-                //     size: 0.01,
-                //     color: 0xffffff,
-                // });
-                // const icospherePoints = new THREE.Points(icosphere.geometry, icospherePointsMaterial);
-                // stage.add(icospherePoints);
-
-                console.log(icosphere);
-            }, 
-            (xhr) => {
-                console.log(`${xhr.loaded / xhr.total * 100}% loaded`);
-            },
-            (error) => {
-                console.error(error);
-            }
-        );
+        stage.add(new THREE.Mesh(
+            new THREE.IcosahedronGeometry(1, 5),
+            new THREE.MeshNormalMaterial({
+                wireframe: true,
+            })
+        ));
+        
+        background.add(new THREE.Mesh(
+            new THREE.IcosahedronGeometry(4, 3),
+            new THREE.MeshBasicMaterial({
+                color: 0x606060,
+                wireframe: true,
+                transparent: true,
+                opacity: 0.4,
+            })
+        ));
 
         window.addEventListener('resize', resize);
     }, [])
