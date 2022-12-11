@@ -6,7 +6,6 @@ import { format } from 'date-fns'
 import { useState, useEffect } from 'react';
 import worldTimestamp from 'world-timestamp'
 import * as THREE from 'three'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 
 const geolocateInterval = 5000;
 const requestServerTimestampInterval = 60000;
@@ -37,11 +36,11 @@ export default function Home() {
         const timestamp = await worldTimestamp(); // "Etc/UTC"
         
         const requestTime = performance.now() - timeRequestSent;
-        console.log(`A request sent to https://worldtimeapi.org/api/timezone/Etc/GMT took ${requestTime}ms.`);
-        console.log(timestamp.response);
-
         const timestampMilliseconds = timestamp.milliseconds + requestTime / 2;
         localTimeDifference = timestampMilliseconds - Date.now();
+
+        console.log(`A request sent to https://worldtimeapi.org/api/timezone/Etc/GMT took ${requestTime}ms.`);
+        console.log(timestamp.response);
     };
 
     const updateTimeText = () => {
