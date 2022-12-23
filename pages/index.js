@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react';
 import worldTimestamp from 'world-timestamp'
 import * as THREE from 'three'
 
-const geolocateInterval = 5000;
+const geolocateInterval = 1000;
 const requestServerTimestampInterval = 60000;
 const timeZoneOffset = new Date().getTimezoneOffset() * 60000;
 
