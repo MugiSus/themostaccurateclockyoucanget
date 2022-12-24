@@ -7,7 +7,6 @@ import { useState, useEffect } from 'react';
 import worldTimestamp from 'world-timestamp'
 import * as THREE from 'three'
 
-const geolocateInterval = 1000;
 const requestServerTimestampInterval = 60000;
 const timeZoneOffset = new Date().getTimezoneOffset() * 60000;
 
@@ -54,8 +53,30 @@ export default function Home() {
         requestAnimationFrame(updateTimeText);
     }
 
-    const geolocate = () => {
-        navigator.geolocation.getCurrentPosition((position) => {
+    // const geolocate = () => {
+    //     navigator.geolocation.getCurrentPosition((position) => {
+    //         [latitude, longitude] = [position.coords.latitude, position.coords.longitude];
+    //         // // example coordinates (根室)
+    //         // [latitude, longitude] = [43.3302042, 145.5828207];
+    //         // // example coordinates (那覇)
+    //         // [latitude, longitude] = [26.2121628, 127.6791549];
+            
+    //         document.getElementsByClassName(styles.indicator)[0]?.animate(...indicatorAniamtion);
+            
+    //         calculatedLongitudeTimeDifference = longitude / 15 * 60 * 60 * 1000;
+    //         setCoordinates(`${latitude}, ${longitude}`);
+            
+    //         if (!alreadyGeolocated)
+    //             requestServerTimestamp();
+            
+    //         alreadyGeolocated = true;
+    //     }, (error) => console.log(error));
+    // };
+
+    useEffect(() => {
+        if (typeof window === 'undefined') return;
+
+        navigator.geolocation.watchPosition((position) => {
             [latitude, longitude] = [position.coords.latitude, position.coords.longitude];
             // // example coordinates (根室)
             // [latitude, longitude] = [43.3302042, 145.5828207];
@@ -71,14 +92,12 @@ export default function Home() {
                 requestServerTimestamp();
             
             alreadyGeolocated = true;
-        }, (error) => console.log(error));
-    };
+        }, (error) => console.log(error), {
+            maximumAge: 0,
+            timeout: 60000,
+            enableHighAccuracy: true
+        });
 
-    useEffect(() => {
-        if (typeof window === 'undefined') return;
-
-        geolocate();
-        setInterval(geolocate, geolocateInterval);
         setInterval(requestServerTimestamp, requestServerTimestampInterval);
 
         updateTimeText();
