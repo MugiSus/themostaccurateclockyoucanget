@@ -77,7 +77,7 @@ export default function Home() {
         if (typeof window === 'undefined') return;
 
         navigator.geolocation.watchPosition((position) => {
-            [latitude, longitude] = [position.coords.latitude, position.coords.longitude];
+            const {latitude, longitude, altitude} = position.coords;
             // // example coordinates (根室)
             // [latitude, longitude] = [43.3302042, 145.5828207];
             // // example coordinates (那覇)
@@ -86,7 +86,11 @@ export default function Home() {
             document.getElementsByClassName(styles.indicator)[0]?.animate(...indicatorAniamtion);
             
             calculatedLongitudeTimeDifference = longitude / 15 * 60 * 60 * 1000;
-            setCoordinates(`${latitude}, ${longitude}`);
+            setCoordinates(
+                altitude
+                ? `${latitude}°, ${longitude}°`
+                : `${latitude}°, ${longitude}°, ${altitude}m`
+            );
             
             if (!alreadyGeolocated)
                 requestServerTimestamp();
