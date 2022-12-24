@@ -51,27 +51,7 @@ export default function Home() {
         setDifference((now > calculatedDate ? "-" : "+") + format(Math.abs(now - calculatedDate) + timeZoneOffset, 'HH:mm:ss.SSS'));
 
         requestAnimationFrame(updateTimeText);
-    }
-
-    // const geolocate = () => {
-    //     navigator.geolocation.getCurrentPosition((position) => {
-    //         [latitude, longitude] = [position.coords.latitude, position.coords.longitude];
-    //         // // example coordinates (根室)
-    //         // [latitude, longitude] = [43.3302042, 145.5828207];
-    //         // // example coordinates (那覇)
-    //         // [latitude, longitude] = [26.2121628, 127.6791549];
-            
-    //         document.getElementsByClassName(styles.indicator)[0]?.animate(...indicatorAniamtion);
-            
-    //         calculatedLongitudeTimeDifference = longitude / 15 * 60 * 60 * 1000;
-    //         setCoordinates(`${latitude}, ${longitude}`);
-            
-    //         if (!alreadyGeolocated)
-    //             requestServerTimestamp();
-            
-    //         alreadyGeolocated = true;
-    //     }, (error) => console.log(error));
-    // };
+    };
 
     useEffect(() => {
         if (typeof window === 'undefined') return;
@@ -86,11 +66,7 @@ export default function Home() {
             document.getElementsByClassName(styles.indicator)[0]?.animate(...indicatorAniamtion);
             
             calculatedLongitudeTimeDifference = longitude / 15 * 60 * 60 * 1000;
-            setCoordinates(
-                altitude
-                ? `${latitude}°, ${longitude}°, ${altitude}m`
-                : `${latitude}°, ${longitude}°`
-            );
+            setCoordinates(`${latitude}°, ${longitude}°`);
             
             if (!alreadyGeolocated)
                 requestServerTimestamp();
