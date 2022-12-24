@@ -88,8 +88,8 @@ export default function Home() {
             calculatedLongitudeTimeDifference = longitude / 15 * 60 * 60 * 1000;
             setCoordinates(
                 altitude
-                ? `${latitude}°, ${longitude}°`
-                : `${latitude}°, ${longitude}°, ${altitude}m`
+                ? `${latitude}°, ${longitude}°, ${altitude}m`
+                : `${latitude}°, ${longitude}°`
             );
             
             if (!alreadyGeolocated)
