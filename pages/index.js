@@ -27,7 +27,7 @@ export default function Home() {
         [innacurateClock, setInnacurateClock],
         [accurateClock, setAccurateClock],
         [difference, setDifference]
-    ] = [useState('Locating...'), useState('...'), useState('...'), useState('...')];
+    ] = [useState('...'), useState('...'), useState('...'), useState('...')];
 
     const requestServerTimestamp = async () => {
         const timeRequestSent = performance.now();
@@ -48,7 +48,10 @@ export default function Home() {
 
         setInnacurateClock(format(now, 'yyyy/MM/dd HH:mm:ss.SSS'));
         setAccurateClock(format(calculatedDate, 'yyyy/MM/dd HH:mm:ss.SSS'));
-        setDifference((now > calculatedDate ? "-" : "+") + format(Math.abs(now - calculatedDate) + timeZoneOffset, 'HH:mm:ss.SSS'));
+        setDifference(
+            ["+", "±", "-"][Math.sign(now - Math.floor(calculatedDate)) + 1] +
+            format(Math.abs(now - calculatedDate) + timeZoneOffset, 'HH:mm:ss.SSS')
+        );
 
         requestAnimationFrame(updateTimeText);
     };
