@@ -74,7 +74,7 @@ export default function Home() {
             const movementsLocaleString = `${
                 speed ? (speed * 3.6).toFixed(1) + "km/h" : "N/A"
             }, ${
-                heading ? ["N","NNE","NE","ENE","E","ESE", "SE", "SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"][Math.floor(heading / 22.5 + 0.5) % 16] : "N/A"
+                heading ? ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"][Math.floor(heading / 22.5 + 0.5) % 16] : "N/A"
             }`;
 
             setCoordinates(coordinatesLocaleString);
