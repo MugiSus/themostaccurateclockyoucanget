@@ -71,11 +71,7 @@ export default function Home() {
             calculatedLongitudeTimeDifference = longitude / 15 * 60 * 60 * 1000;
 
             const coordinatesLocaleString = `${Math.abs(latitude).toFixed(7)}°${latitude >= 0 ? "N" : "S"}, ${Math.abs(longitude).toFixed(7)}°${longitude >= 0 ? "E" : "W"}`;
-            const movementsLocaleString = `${
-                speed ? (speed * 3.6).toFixed(3) + "km/h" : "N/A"
-            }, ${
-                heading ? heading.toFixed(3) : "N/A"
-            }`;
+            const movementsLocaleString = `${speed ? (speed * 3.6).toFixed(3) + "km/h" : "N/A"}, ${heading ? heading.toFixed(3) + "°" : "N/A"}`;
 
             setCoordinates(coordinatesLocaleString);
             setMovements(movementsLocaleString);
