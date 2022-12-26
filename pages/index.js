@@ -15,7 +15,6 @@ const indicatorAniamtion = [
     { duration: 2500, easing: 'cubic-bezier(0.1, 0.5, 0.25, 1)' }
 ];
 
-let latitude, longitude;
 let localTimeDifference = 0;
 let calculatedLongitudeTimeDifference = 0;
 let alreadyGeolocated = false;
@@ -63,9 +62,9 @@ export default function Home() {
             const {latitude, longitude, altitude} = position.coords;
             console.log(position.coords);
             // // example coordinates (根室)
-            // [latitude, longitude] = [43.3302042, 145.5828207];
+            // const [latitude, longitude] = [43.3302042, 145.5828207];
             // // example coordinates (那覇)
-            // [latitude, longitude] = [26.2121628, 127.6791549];
+            // const [latitude, longitude] = [26.2121628, 127.6791549];
             
             document.getElementsByClassName(styles.indicator)[0]?.animate(...indicatorAniamtion);
             
