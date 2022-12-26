@@ -180,7 +180,6 @@ export default function Home() {
                     </div>
                     <div className={styles.topicContainer}>
                         <span className={styles.topicTitle}>
-                            <span className={styles.indicator}></span>
                             Your movements:
                         </span>
                         <code className={styles.code}>{movements}</code>
