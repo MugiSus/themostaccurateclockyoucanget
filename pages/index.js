@@ -72,9 +72,9 @@ export default function Home() {
 
             const coordinatesLocaleString = `${Math.abs(latitude).toFixed(7)}°${latitude >= 0 ? "N" : "S"}, ${Math.abs(longitude).toFixed(7)}°${longitude >= 0 ? "E" : "W"}`;
             const movementsLocaleString = `${
-                speed ? (speed * 3.6).toFixed(2) + "km/h" : "N/A"
+                speed ? (speed * 3.6).toFixed(3) + "km/h" : "N/A"
             }, ${
-                heading ? heading.toFixed(2) : "N/A"
+                heading ? heading.toFixed(3) : "N/A"
             }`;
 
             setCoordinates(coordinatesLocaleString);
