@@ -23,10 +23,11 @@ export default function Home() {
 
     const [
         [coordinates, setCoordinates],
+        [movements, setMovements],
         [innacurateClock, setInnacurateClock],
         [accurateClock, setAccurateClock],
         [difference, setDifference]
-    ] = [useState('...'), useState('...'), useState('...'), useState('...')];
+    ] = [useState('...'), useState('...'), useState('...'), useState('...'), useState('...')];
 
     const requestServerTimestamp = async () => {
         const timeRequestSent = performance.now();
@@ -59,7 +60,7 @@ export default function Home() {
         if (typeof window === 'undefined') return;
 
         navigator.geolocation.watchPosition((position) => {
-            const {latitude, longitude, altitude} = position.coords;
+            const {latitude, longitude, heading, speed} = position.coords;
             console.log(position.coords);
             // // example coordinates (根室)
             // const [latitude, longitude] = [43.3302042, 145.5828207];
@@ -67,10 +68,13 @@ export default function Home() {
             // const [latitude, longitude] = [26.2121628, 127.6791549];
             
             document.getElementsByClassName(styles.indicator)[0]?.animate(...indicatorAniamtion);
-            
             calculatedLongitudeTimeDifference = longitude / 15 * 60 * 60 * 1000;
+
             const coordinatesLocaleString = `${Math.abs(latitude).toFixed(7)}°${latitude >= 0 ? "N" : "S"}, ${Math.abs(longitude).toFixed(7)}°${longitude >= 0 ? "E" : "W"}`;
+            const movementsLocaleString = `${heading ? heading.toFixed(1) + "°" : "N/A"}, ${speed ? (speed * 3.6).toFixed(1) + "km/h" : "N/A"}`;
+
             setCoordinates(coordinatesLocaleString);
+            setMovements(movementsLocaleString);
             
             if (!alreadyGeolocated)
             requestServerTimestamp();
@@ -173,6 +177,13 @@ export default function Home() {
                             Your coordinates:
                         </span>
                         <code className={styles.code}>{coordinates}</code>
+                    </div>
+                    <div className={styles.topicContainer}>
+                        <span className={styles.topicTitle}>
+                            <span className={styles.indicator}></span>
+                            Your movements:
+                        </span>
+                        <code className={styles.code}>{movements}</code>
                     </div>
                     <div className={styles.topicContainer}>
                         <span className={styles.topicTitle}>
