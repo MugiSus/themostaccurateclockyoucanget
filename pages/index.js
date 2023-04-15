@@ -49,8 +49,8 @@ export default function Home() {
         setInnacurateClock(format(now, 'yyyy/MM/dd HH:mm:ss.SSS'));
         setAccurateClock(format(calculatedDate, 'yyyy/MM/dd HH:mm:ss.SSS'));
         setDifference(
-            ["+", "±", "-"][Math.sign(now - Math.floor(calculatedDate)) + 1] +
-            format(Math.abs(now - calculatedDate) + timeZoneOffset, 'HH:mm:ss.SSS')
+            ["-", "±", "+"][Math.sign(Math.floor(calculatedDate - now)) + 1] +
+            format(Math.abs(calculatedDate - now) + timeZoneOffset, 'HH:mm:ss.SSS')
         );
 
         requestAnimationFrame(updateTimeText);
