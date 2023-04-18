@@ -205,7 +205,7 @@ export default function Home() {
                 </div>
 
                 <div className={styles.footer}>
-                    Made with ❤️ by MugiSus 2022-2023
+                    Made with ❤️ by MugiSus ©︎ 2022-2023
                 </div>
             </main>
 
