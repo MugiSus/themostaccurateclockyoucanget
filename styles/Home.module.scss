@@ -47,6 +47,7 @@
 
     .topicTitle {
         display: inline-block;
+        font-weight: 200;
     }
 
     .code {
@@ -59,6 +60,12 @@
         font-weight: 400;
         font-family: Inconsolata, monospace;
     }
+}
+
+.footer {
+    font-size: 0.8rem;
+    margin-bottom: 2rem;
+    font-weight: 200;
 }
 
 .canvas {

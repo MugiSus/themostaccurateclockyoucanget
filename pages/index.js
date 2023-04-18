@@ -203,6 +203,10 @@ export default function Home() {
                         <code className={styles.code}>{difference}</code>
                     </div>
                 </div>
+
+                <div className={styles.footer}>
+                    Made with ❤️ by MugiSus 2022-2023
+                </div>
             </main>
 
             <canvas className={styles.canvas}></canvas>
