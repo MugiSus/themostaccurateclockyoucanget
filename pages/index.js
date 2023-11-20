@@ -10,21 +10,21 @@ import * as THREE from "three";
 const requestServerTimestampInterval = 60000;
 const timeZoneOffset = new Date().getTimezoneOffset() * 60000;
 
-const indicatorAniamtionConfig = [
-  [{ opacity: 1 }, { opacity: 0.2 }],
-  { duration: 2500, easing: "cubic-bezier(0.1, 0.5, 0.25, 1)" },
-];
-
 let localTimeDifference = 0;
 let calculatedLongitudeTimeDifference = 0;
-let alreadyGeolocated = false;
 
 export default function Home() {
-  const [coordinates, setCoordinates] = useState(null);
-  const [movements, setMovements] = useState(null);
+  const [isCoordinatesUnavailable, setIsCoordinatesUnavailable] =
+    useState(false);
+  const [longitude, setLongitude] = useState(null);
+  const [latitude, setLatitude] = useState(null);
+  const [movementSpeed, setMovementSpeed] = useState(null);
+  const [movementDirection, setMovementDirection] = useState(null);
   const [innacurateClock, setInnacurateClock] = useState(null);
+  const [isMovementsUnavailable, setIsMovementsUnavailable] = useState(false);
   const [accurateClock, setAccurateClock] = useState(null);
   const [difference, setDifference] = useState(null);
+  const [isAlreadyGeolocated, setIsAlreadyGeolocated] = useState(false);
 
   const requestServerTimestamp = async () => {
     const timeRequestSent = performance.now();
@@ -38,15 +38,15 @@ export default function Home() {
 
   const updateTimeText = () => {
     const now = Date.now();
-    const calculatedDate = alreadyGeolocated
+    const calculatedDate = isAlreadyGeolocated
       ? now +
         localTimeDifference +
         timeZoneOffset +
         calculatedLongitudeTimeDifference
       : now;
 
-    setInnacurateClock(format(now, "yyyy/MM/dd HH:mm:ss.SSS"));
-    setAccurateClock(format(calculatedDate, "yyyy/MM/dd HH:mm:ss.SSS"));
+    setInnacurateClock(now);
+    setAccurateClock(calculatedDate);
     setDifference(
       ["-", "±", "+"][Math.sign(Math.floor(calculatedDate - now)) + 1] +
         format(Math.abs(calculatedDate - now) + timeZoneOffset, "HH:mm:ss.SSS")
@@ -60,28 +60,35 @@ export default function Home() {
 
     navigator.geolocation.watchPosition(
       (position) => {
+        setIsCoordinatesUnavailable(false);
+
         const { latitude, longitude, heading, speed } = position.coords;
+        calculatedLongitudeTimeDifference = (longitude / 15) * 60 * 60 * 1000;
+
+        setLongitude(longitude);
+        setLatitude(latitude);
+
+        if (speed === null) setIsMovementsUnavailable(true);
+        setMovementSpeed(speed);
+        setMovementDirection(heading);
+
+        if (!isAlreadyGeolocated) {
+          requestServerTimestamp();
+          setIsAlreadyGeolocated(true);
+        }
 
         document
           .getElementsByClassName(styles.indicator)[0]
-          ?.animate(...indicatorAniamtionConfig);
-        calculatedLongitudeTimeDifference = (longitude / 15) * 60 * 60 * 1000;
-
-        const coordinatesLocaleString = `${Math.abs(latitude).toFixed(7)}°${
-          latitude >= 0 ? "N" : "S"
-        }, ${Math.abs(longitude).toFixed(7)}°${longitude >= 0 ? "E" : "W"}`;
-        const movementsLocaleString = `${
-          speed ? (speed * 3.6).toFixed(3) + "km/h" : "N/A"
-        }, ${heading ? heading.toFixed(3) + "°" : "N/A"}`;
-
-        setCoordinates(coordinatesLocaleString);
-        setMovements(movementsLocaleString);
-
-        if (!alreadyGeolocated) requestServerTimestamp();
-
-        alreadyGeolocated = true;
+          ?.animate([{ opacity: 1 }, { opacity: 0.2 }], {
+            duration: 2500,
+            easing: "cubic-bezier(0.1, 0.5, 0.25, 1)",
+          });
       },
-      (error) => console.log(error),
+      (error) => {
+        console.log(error);
+        setIsCoordinatesUnavailable(true);
+        setIsMovementsUnavailable(true);
+      },
       {
         maximumAge: 0,
         timeout: 60000,
@@ -173,19 +180,51 @@ export default function Home() {
               <span className={styles.indicator}></span>
               Your coordinates:
             </span>
-            <code className={styles.code}>{coordinates ?? "..."}</code>
+            <code
+              className={`${styles.code} ${
+                isCoordinatesUnavailable && styles.unavailable
+              }`}
+            >
+              {isCoordinatesUnavailable
+                ? "---"
+                : latitude && longitude
+                ? `${Math.abs(latitude).toFixed(7)}°${
+                    latitude >= 0 ? "N" : "S"
+                  }, ${Math.abs(longitude).toFixed(7)}°${
+                    longitude >= 0 ? "E" : "W"
+                  }`
+                : "..."}
+            </code>
           </div>
           <div className={styles.topicContainer}>
             <span className={styles.topicTitle}>Your movements:</span>
-            <code className={styles.code}>{movements ?? "..."}</code>
+            <code
+              className={`${styles.code} ${
+                isMovementsUnavailable && styles.unavailable
+              }`}
+            >
+              {isMovementsUnavailable
+                ? "---"
+                : movementSpeed && movementDirection
+                ? `${(speed * 3.6).toFixed(3)}km/h, ${heading.toFixed(3)}°`
+                : "..."}
+            </code>
           </div>
           <div className={styles.topicContainer}>
             <span className={styles.topicTitle}>Your inaccurate clock:</span>
-            <code className={styles.code}>{innacurateClock ?? "..."}</code>
+            <code className={styles.code}>
+              {innacurateClock
+                ? format(innacurateClock, "yyyy/MM/dd HH:mm:ss.SSS")
+                : "..."}
+            </code>
           </div>
           <div className={styles.topicContainer}>
             <span className={styles.topicTitle}>Your most accurate clock:</span>
-            <code className={styles.code}>{accurateClock ?? "..."}</code>
+            <code className={styles.code}>
+              {accurateClock
+                ? format(accurateClock, "yyyy/MM/dd HH:mm:ss.SSS")
+                : "..."}
+            </code>
           </div>
           <div className={styles.topicContainer}>
             <span className={styles.topicTitle}>Difference:</span>
