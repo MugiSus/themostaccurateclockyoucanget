@@ -78,7 +78,7 @@ export default function Home() {
     navigator.geolocation.watchPosition(
       (position) => {
         setIsCoordinatesUnavailable(false);
-        if (position.coords.speed === null) setIsMovementsUnavailable(true);
+        setIsMovementsUnavailable(position.coords.speed === null);
         updateDiff(position);
       },
       (error) => {
