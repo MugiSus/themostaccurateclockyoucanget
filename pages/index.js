@@ -6,11 +6,11 @@ import { format } from "date-fns";
 import { useState, useEffect } from "react";
 import worldTimestamp from "world-timestamp";
 import * as THREE from "three";
+import useRequestAnimationFrame from "beautiful-react-hooks/useRequestAnimationFrame";
+import useInterval from "beautiful-react-hooks/useInterval";
 
-const requestServerTimestampInterval = 60000;
-const timeZoneOffset = new Date().getTimezoneOffset() * 60000;
+const RequestServerTimestampInterval = 60000;
 
-let localTimeDifference = 0;
 let calculatedLongitudeTimeDifference = 0;
 
 export default function Home() {
@@ -25,6 +25,17 @@ export default function Home() {
   const [accurateClock, setAccurateClock] = useState(null);
   const [difference, setDifference] = useState(null);
   const [isAlreadyGeolocated, setIsAlreadyGeolocated] = useState(false);
+  const [localTimeDifference, setLocalTimeDifference] = useState(0);
+
+  useInterval(() => requestServerTimestamp(), RequestServerTimestampInterval);
+
+  useRequestAnimationFrame(
+    (progress, next) => {
+      updateTimeText();
+      next();
+    },
+    { finishAt: -1 }
+  );
 
   const requestServerTimestamp = async () => {
     const timeRequestSent = performance.now();
@@ -32,12 +43,14 @@ export default function Home() {
     const timestamp = await worldTimestamp(); // "Etc/UTC"
 
     const requestTime = performance.now() - timeRequestSent;
-    const timestampMilliseconds = timestamp.milliseconds + requestTime / 2;
-    localTimeDifference = timestampMilliseconds - Date.now();
+    setLocalTimeDifference(
+      timestamp.milliseconds + requestTime / 2 - Date.now()
+    );
   };
 
   const updateTimeText = () => {
     const now = Date.now();
+    const timeZoneOffset = new Date().getTimezoneOffset() * 60000;
     const calculatedDate = isAlreadyGeolocated
       ? now +
         localTimeDifference +
@@ -51,8 +64,6 @@ export default function Home() {
       ["-", "±", "+"][Math.sign(Math.floor(calculatedDate - now)) + 1] +
         format(Math.abs(calculatedDate - now) + timeZoneOffset, "HH:mm:ss.SSS")
     );
-
-    requestAnimationFrame(updateTimeText);
   };
 
   useEffect(() => {
@@ -73,8 +84,8 @@ export default function Home() {
         setMovementDirection(heading);
 
         if (!isAlreadyGeolocated) {
-          requestServerTimestamp();
           setIsAlreadyGeolocated(true);
+          requestServerTimestamp();
         }
 
         document
@@ -91,14 +102,12 @@ export default function Home() {
       },
       {
         maximumAge: 0,
-        timeout: 60000,
+        timeout: 20000,
         enableHighAccuracy: true,
       }
     );
 
-    setInterval(requestServerTimestamp, requestServerTimestampInterval);
-
-    updateTimeText();
+    setInterval(requestServerTimestamp, RequestServerTimestampInterval);
 
     // three.js
     const camera = new THREE.PerspectiveCamera(75);
