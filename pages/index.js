@@ -20,11 +20,11 @@ let calculatedLongitudeTimeDifference = 0;
 let alreadyGeolocated = false;
 
 export default function Home() {
-  const [coordinates, setCoordinates] = useState("...");
-  const [movements, setMovements] = useState("...");
-  const [innacurateClock, setInnacurateClock] = useState("...");
-  const [accurateClock, setAccurateClock] = useState("...");
-  const [difference, setDifference] = useState("...");
+  const [coordinates, setCoordinates] = useState(null);
+  const [movements, setMovements] = useState(null);
+  const [innacurateClock, setInnacurateClock] = useState(null);
+  const [accurateClock, setAccurateClock] = useState(null);
+  const [difference, setDifference] = useState(null);
 
   const requestServerTimestamp = async () => {
     const timeRequestSent = performance.now();
@@ -173,23 +173,23 @@ export default function Home() {
               <span className={styles.indicator}></span>
               Your coordinates:
             </span>
-            <code className={styles.code}>{coordinates}</code>
+            <code className={styles.code}>{coordinates ?? "..."}</code>
           </div>
           <div className={styles.topicContainer}>
             <span className={styles.topicTitle}>Your movements:</span>
-            <code className={styles.code}>{movements}</code>
+            <code className={styles.code}>{movements ?? "..."}</code>
           </div>
           <div className={styles.topicContainer}>
             <span className={styles.topicTitle}>Your inaccurate clock:</span>
-            <code className={styles.code}>{innacurateClock}</code>
+            <code className={styles.code}>{innacurateClock ?? "..."}</code>
           </div>
           <div className={styles.topicContainer}>
             <span className={styles.topicTitle}>Your most accurate clock:</span>
-            <code className={styles.code}>{accurateClock}</code>
+            <code className={styles.code}>{accurateClock ?? "..."}</code>
           </div>
           <div className={styles.topicContainer}>
             <span className={styles.topicTitle}>Difference:</span>
-            <code className={styles.code}>{difference}</code>
+            <code className={styles.code}>{difference ?? "..."}</code>
           </div>
         </div>
 
