@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import Head from "next/head";
-import Image from "next/image";
 import styles from "../styles/Home.module.scss";
 import { format } from "date-fns";
 import { useState, useEffect } from "react";
@@ -11,8 +10,6 @@ import useInterval from "beautiful-react-hooks/useInterval";
 
 const RequestServerTimestampInterval = 60000;
 
-let calculatedLongitudeTimeDifference = 0;
-
 export default function Home() {
   const [isCoordinatesUnavailable, setIsCoordinatesUnavailable] =
     useState(false);
@@ -20,18 +17,17 @@ export default function Home() {
   const [latitude, setLatitude] = useState(null);
   const [movementSpeed, setMovementSpeed] = useState(null);
   const [movementDirection, setMovementDirection] = useState(null);
-  const [innacurateClock, setInnacurateClock] = useState(null);
   const [isMovementsUnavailable, setIsMovementsUnavailable] = useState(false);
-  const [accurateClock, setAccurateClock] = useState(null);
-  const [difference, setDifference] = useState(null);
   const [isAlreadyGeolocated, setIsAlreadyGeolocated] = useState(false);
   const [localTimeDifference, setLocalTimeDifference] = useState(0);
+  const [longitudeTimeDifference, setLongitudeTimeDifference] = useState(0);
+  const [currentDate, setCurrentDate] = useState(null);
 
   useInterval(() => requestServerTimestamp(), RequestServerTimestampInterval);
 
   useRequestAnimationFrame(
     (progress, next) => {
-      updateTimeText();
+      setCurrentDate(new Date());
       next();
     },
     { finishAt: -1 }
@@ -48,22 +44,32 @@ export default function Home() {
     );
   };
 
-  const updateTimeText = () => {
-    const now = Date.now();
-    const timeZoneOffset = new Date().getTimezoneOffset() * 60000;
-    const calculatedDate = isAlreadyGeolocated
-      ? now +
-        localTimeDifference +
-        timeZoneOffset +
-        calculatedLongitudeTimeDifference
-      : now;
+  const updateDiff = (position) => {
+    const { latitude, longitude, heading, speed } = position.coords;
 
-    setInnacurateClock(now);
-    setAccurateClock(calculatedDate);
-    setDifference(
-      ["-", "±", "+"][Math.sign(Math.floor(calculatedDate - now)) + 1] +
-        format(Math.abs(calculatedDate - now) + timeZoneOffset, "HH:mm:ss.SSS")
-    );
+    setLongitude(longitude);
+    setLatitude(latitude);
+    setMovementSpeed(speed);
+    setMovementDirection(heading);
+
+    const longitudeTimeDiff =
+      ((longitude / 15) * 60 + new Date().getTimezoneOffset()) * 60 * 1000;
+
+    console.log(longitudeTimeDiff);
+
+    setLongitudeTimeDifference(longitudeTimeDiff); // 15° = 60min = 60*60sec = 60*60*1000ms
+
+    if (!isAlreadyGeolocated) {
+      setIsAlreadyGeolocated(true);
+      requestServerTimestamp();
+    }
+
+    document
+      .getElementsByClassName(styles.indicator)[0]
+      ?.animate([{ opacity: 1 }, { opacity: 0.2 }], {
+        duration: 2500,
+        easing: "cubic-bezier(0.1, 0.5, 0.25, 1)",
+      });
   };
 
   useEffect(() => {
@@ -72,28 +78,8 @@ export default function Home() {
     navigator.geolocation.watchPosition(
       (position) => {
         setIsCoordinatesUnavailable(false);
-
-        const { latitude, longitude, heading, speed } = position.coords;
-        calculatedLongitudeTimeDifference = (longitude / 15) * 60 * 60 * 1000;
-
-        setLongitude(longitude);
-        setLatitude(latitude);
-
-        if (speed === null) setIsMovementsUnavailable(true);
-        setMovementSpeed(speed);
-        setMovementDirection(heading);
-
-        if (!isAlreadyGeolocated) {
-          setIsAlreadyGeolocated(true);
-          requestServerTimestamp();
-        }
-
-        document
-          .getElementsByClassName(styles.indicator)[0]
-          ?.animate([{ opacity: 1 }, { opacity: 0.2 }], {
-            duration: 2500,
-            easing: "cubic-bezier(0.1, 0.5, 0.25, 1)",
-          });
+        if (position.coords.speed === null) setIsMovementsUnavailable(true);
+        updateDiff(position);
       },
       (error) => {
         console.log(error);
@@ -106,8 +92,6 @@ export default function Home() {
         enableHighAccuracy: true,
       }
     );
-
-    setInterval(requestServerTimestamp, RequestServerTimestampInterval);
 
     // three.js
     const camera = new THREE.PerspectiveCamera(75);
@@ -222,22 +206,39 @@ export default function Home() {
           <div className={styles.topicContainer}>
             <span className={styles.topicTitle}>Your inaccurate clock:</span>
             <code className={styles.code}>
-              {innacurateClock
-                ? format(innacurateClock, "yyyy/MM/dd HH:mm:ss.SSS")
+              {isAlreadyGeolocated
+                ? format(currentDate.getTime(), "yyyy/MM/dd HH:mm:ss.SSS")
                 : "..."}
             </code>
           </div>
           <div className={styles.topicContainer}>
             <span className={styles.topicTitle}>Your most accurate clock:</span>
             <code className={styles.code}>
-              {accurateClock
-                ? format(accurateClock, "yyyy/MM/dd HH:mm:ss.SSS")
+              {isAlreadyGeolocated
+                ? format(
+                    currentDate.getTime() +
+                      localTimeDifference +
+                      longitudeTimeDifference,
+                    "yyyy/MM/dd HH:mm:ss.SSS"
+                  )
                 : "..."}
             </code>
           </div>
           <div className={styles.topicContainer}>
             <span className={styles.topicTitle}>Difference:</span>
-            <code className={styles.code}>{difference ?? "..."}</code>
+            <code className={styles.code}>
+              {currentDate &&
+                `${
+                  ["-", "±", "+"][
+                    Math.sign(localTimeDifference + longitudeTimeDifference) + 1
+                  ]
+                }${format(
+                  localTimeDifference +
+                    longitudeTimeDifference +
+                    currentDate.getTimezoneOffset() * 60 * 1000,
+                  "HH:mm:ss.SSS"
+                )}`}
+            </code>
           </div>
         </div>
 
