@@ -103,6 +103,11 @@ export default function Home() {
       )
     : currentDate;
 
+  const thisYear = mostAccurateDate.getFullYear();
+  const yearLength = new Date(thisYear + 1, 0, 1) - new Date(thisYear, 0, 1);
+  const yearProgress =
+    (mostAccurateDate - new Date(thisYear, 0, 1)) / yearLength;
+
   useInterval(() => requestServerTimestamp(), RequestServerTimestampInterval);
   useRequestAnimationFrame(
     (progress, next) => {
@@ -126,17 +131,8 @@ export default function Home() {
     const { latitude, longitude, heading, speed } = position.coords;
 
     const longitudeTimeDiff = (longitude / 15) * 60 * 60 * 1000;
-    const mostAccurateDate = new Date(
-      currentDate.getTime() +
-        localTimeDifference +
-        longitudeTimeDiff +
-        timeZoneOffset
-    );
 
-    const thisYear = mostAccurateDate.getFullYear();
-    const yearLength = new Date(thisYear + 1, 0, 1) - new Date(thisYear, 0, 1);
-    const fromBegginingOfYear = mostAccurateDate - new Date(thisYear, 0, 1);
-    const theta = (fromBegginingOfYear / yearLength) * 2 * Math.PI;
+    const theta = yearProgress * 2 * Math.PI;
 
     const equationOfTime =
       229.18 *
@@ -184,8 +180,8 @@ export default function Home() {
 
     setLongitudeTimeDifference(longitudeTimeDiff);
 
-    setSouthingTime(southingTime);
     setSunriseTime(sunriseTime);
+    setSouthingTime(southingTime);
     setSunsetTime(sunsetTime);
 
     document
@@ -308,7 +304,15 @@ export default function Home() {
           <details>
             <summary className={styles.detailSummary}>Advanced</summary>
             <div className={styles.topicContainer}>
-              <span className={styles.topicTitle}>Sunrise Time</span>
+              <span className={styles.topicTitle}>Year progress</span>
+              <code className={styles.code}>
+                {isAlreadyGeolocated
+                  ? `${(yearProgress * 100).toFixed(6)}%`
+                  : "..."}
+              </code>
+            </div>
+            <div className={styles.topicContainer}>
+              <span className={styles.topicTitle}>Sunrise time</span>
               <code className={styles.code}>
                 {isAlreadyGeolocated
                   ? format(sunriseTime, "HH:mm:ss.SSS")
@@ -316,7 +320,7 @@ export default function Home() {
               </code>
             </div>
             <div className={styles.topicContainer}>
-              <span className={styles.topicTitle}>Southing Time</span>
+              <span className={styles.topicTitle}>Southing time</span>
               <code className={styles.code}>
                 {isAlreadyGeolocated
                   ? format(southingTime, "HH:mm:ss.SSS")
@@ -324,7 +328,7 @@ export default function Home() {
               </code>
             </div>
             <div className={styles.topicContainer}>
-              <span className={styles.topicTitle}>Sunset Time</span>
+              <span className={styles.topicTitle}>Sunset time</span>
               <code className={styles.code}>
                 {isAlreadyGeolocated
                   ? format(sunsetTime, "HH:mm:ss.SSS")
