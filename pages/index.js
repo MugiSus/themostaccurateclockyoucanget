@@ -54,8 +54,8 @@ export default function Home() {
     setLongitude(longitude);
     setLatitude(latitude);
 
-    if (speed === null && movementSpeed === null)
-      setIsMovementsUnavailable(true);
+    if (speed !== null || movementSpeed !== null)
+      setIsMovementsUnavailable(false);
 
     if (speed !== null) setMovementSpeed(speed);
     if (heading !== null) setMovementHeading(heading);
