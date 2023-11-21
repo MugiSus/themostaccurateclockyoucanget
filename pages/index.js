@@ -96,7 +96,7 @@ export default function Home() {
 
   const mostAccurateDate = isAlreadyGeolocated
     ? new Date(
-        currentDate * 1 +
+        currentDate.getTime() +
           localTimeDifference +
           longitudeTimeDifference +
           timeZoneOffset
@@ -126,6 +126,12 @@ export default function Home() {
     const { latitude, longitude, heading, speed } = position.coords;
 
     const longitudeTimeDiff = (longitude / 15) * 60 * 60 * 1000;
+    const mostAccurateDate = new Date(
+      currentDate.getTime() +
+        localTimeDifference +
+        longitudeTimeDiff +
+        timeZoneOffset
+    );
 
     const thisYear = mostAccurateDate.getFullYear();
     const yearLength = new Date(thisYear + 1, 0, 1) - new Date(thisYear, 0, 1);
@@ -133,12 +139,12 @@ export default function Home() {
     const theta = (fromBegginingOfYear / yearLength) * 2 * Math.PI;
 
     const equationOfTime =
-      0.0072 * Math.cos(theta) -
-      0.0528 * Math.cos(2 * theta) +
-      0.0012 * Math.cos(3 * theta) -
-      0.1229 * Math.sin(theta) -
-      0.1565 * Math.sin(2 * theta) -
-      0.0041 * Math.sin(3 * theta);
+      229.18 *
+      (0.000075 +
+        0.001868 * Math.cos(theta) -
+        0.032077 * Math.sin(theta) -
+        0.014615 * Math.cos(2 * theta) -
+        0.040849 * Math.sin(2 * theta));
 
     const declination =
       0.006918 -
@@ -149,20 +155,24 @@ export default function Home() {
       0.002697 * Math.cos(3 * theta) +
       0.00148 * Math.sin(3 * theta);
 
-    const azimuth = Math.acos(
-      (Math.sin(-0.899) - Math.sin(latitude) * Math.sin(declination)) /
-        (Math.cos(latitude) * Math.cos(declination))
+    const hourAngle = Math.acos(
+      Math.cos((90.833 * Math.PI) / 180) /
+        (Math.cos((latitude * Math.PI) / 180) * Math.cos(declination)) -
+        Math.tan((latitude * Math.PI) / 180) * Math.tan(declination)
     );
 
-    console.log(azimuth * (180 / Math.PI));
-
     const southingTime =
-      (12 - equationOfTime) * 60 * 60 * 1000 -
+      (720 - equationOfTime) * 60 * 1000 -
       localTimeDifference -
-      longitudeTimeDiff -
-      timeZoneOffset;
-    const sunriseTime = 0;
-    const sunsetTime = 0;
+      longitudeTimeDiff;
+    const sunriseTime =
+      (720 - 4 * (hourAngle / Math.PI) * 180 - equationOfTime) * 60 * 1000 -
+      localTimeDifference -
+      longitudeTimeDiff;
+    const sunsetTime =
+      (720 + 4 * (hourAngle / Math.PI) * 180 - equationOfTime) * 60 * 1000 -
+      localTimeDifference -
+      longitudeTimeDiff;
 
     setLongitude(longitude);
     setLatitude(latitude);
@@ -176,11 +186,6 @@ export default function Home() {
     setSunriseTime(sunriseTime);
     setSunsetTime(sunsetTime);
 
-    if (!isAlreadyGeolocated) {
-      setIsAlreadyGeolocated(true);
-      requestServerTimestamp();
-    }
-
     document
       .getElementsByClassName(styles.indicator)[0]
       ?.animate([{ opacity: 1 }, { opacity: 0.2 }], {
@@ -192,14 +197,19 @@ export default function Home() {
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    navigator.geolocation.watchPosition(
+    const watchId = navigator.geolocation.watchPosition(
       (position) => {
         setIsCoordinatesUnavailable(false);
         setIsMovementsUnavailable(position.coords.speed === null);
+
+        if (!isAlreadyGeolocated) {
+          setIsAlreadyGeolocated(true);
+          requestServerTimestamp();
+        }
         updateDiff(position);
       },
       (error) => {
-        console.log(error);
+        console.error(error);
         setIsCoordinatesUnavailable(true);
         setIsMovementsUnavailable(true);
       },
@@ -211,6 +221,8 @@ export default function Home() {
     );
 
     initThree();
+
+    return () => navigator.geolocation.clearWatch(watchId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -297,7 +309,7 @@ export default function Home() {
               <span className={styles.topicTitle}>Sunrise Time</span>
               <code className={styles.code}>
                 {isAlreadyGeolocated
-                  ? format(sunriseTime + timeZoneOffset, "HH:mm:ss.SSS")
+                  ? format(sunriseTime, "HH:mm:ss.SSS")
                   : "..."}
               </code>
             </div>
@@ -305,7 +317,7 @@ export default function Home() {
               <span className={styles.topicTitle}>Southing Time</span>
               <code className={styles.code}>
                 {isAlreadyGeolocated
-                  ? format(southingTime + timeZoneOffset, "HH:mm:ss.SSS")
+                  ? format(southingTime, "HH:mm:ss.SSS")
                   : "..."}
               </code>
             </div>
@@ -313,7 +325,7 @@ export default function Home() {
               <span className={styles.topicTitle}>Sunset Time</span>
               <code className={styles.code}>
                 {isAlreadyGeolocated
-                  ? format(sunsetTime + timeZoneOffset, "HH:mm:ss.SSS")
+                  ? format(sunsetTime, "HH:mm:ss.SSS")
                   : "..."}
               </code>
             </div>
