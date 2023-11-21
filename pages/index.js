@@ -269,7 +269,7 @@ export default function Home() {
                 : movementSpeed && movementHeading
                 ? `${(movementSpeed * 3.6).toFixed(
                     3
-                  )}km/h, ${movementHeading.toFixed(3)}°`
+                  )}km/h ${movementHeading.toFixed(3)}°`
                 : "..."}
             </code>
           </div>
