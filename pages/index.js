@@ -10,6 +10,69 @@ import useInterval from "beautiful-react-hooks/useInterval";
 
 const RequestServerTimestampInterval = 60000;
 
+function initThree() {
+  // three.js
+  const camera = new THREE.PerspectiveCamera(75);
+  camera.position.set(0, 0, 2.5);
+  camera.lookAt(0, 0, 0);
+
+  const scene = new THREE.Scene();
+  const renderer = new THREE.WebGLRenderer({
+    antialias: true,
+    alpha: true,
+    canvas: document.getElementsByClassName(styles.canvas)[0],
+  });
+
+  const stage = new THREE.Object3D();
+  const background = new THREE.Object3D();
+  scene.add(stage);
+  scene.add(background);
+
+  const axisAngle = (23.4 * Math.PI) / 180;
+  const axisVector = new THREE.Vector3(
+    Math.sin(axisAngle),
+    Math.cos(axisAngle),
+    0
+  );
+
+  const earthIcosphereMesh = new THREE.Mesh(
+    new THREE.IcosahedronGeometry(1, 5),
+    new THREE.MeshNormalMaterial({
+      wireframe: true,
+    })
+  );
+  const backgroundIcosphereMesh = new THREE.Mesh(
+    new THREE.IcosahedronGeometry(4, 4),
+    new THREE.MeshBasicMaterial({
+      color: 0x606060,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.4,
+    })
+  );
+
+  stage.add(earthIcosphereMesh);
+  background.add(backgroundIcosphereMesh);
+
+  const animate = (time) => {
+    const rad = ((time / 20000) * Math.PI) / 2;
+    earthIcosphereMesh.quaternion.setFromAxisAngle(axisVector, rad);
+    background.quaternion.setFromAxisAngle(axisVector, rad * 0.8);
+    renderer.render(scene, camera);
+  };
+  renderer.setAnimationLoop(animate);
+
+  const resize = () => {
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+  };
+  resize();
+
+  window.addEventListener("resize", resize);
+}
+
 export default function Home() {
   const [isAlreadyGeolocated, setIsAlreadyGeolocated] = useState(false);
 
@@ -28,7 +91,6 @@ export default function Home() {
   const [currentDate, setCurrentDate] = useState(null);
 
   useInterval(() => requestServerTimestamp(), RequestServerTimestampInterval);
-
   useRequestAnimationFrame(
     (progress, next) => {
       setCurrentDate(new Date());
@@ -98,67 +160,7 @@ export default function Home() {
       }
     );
 
-    // three.js
-    const camera = new THREE.PerspectiveCamera(75);
-    camera.position.set(0, 0, 2.5);
-    camera.lookAt(0, 0, 0);
-
-    const scene = new THREE.Scene();
-    const renderer = new THREE.WebGLRenderer({
-      antialias: true,
-      alpha: true,
-      canvas: document.getElementsByClassName(styles.canvas)[0],
-    });
-
-    const resize = () => {
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.setPixelRatio(window.devicePixelRatio);
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-    };
-    resize();
-
-    const stage = new THREE.Object3D();
-    const background = new THREE.Object3D();
-    scene.add(stage);
-    scene.add(background);
-
-    const axisAngle = (23.4 * Math.PI) / 180;
-    const axisVector = new THREE.Vector3(
-      Math.sin(axisAngle),
-      Math.cos(axisAngle),
-      0
-    );
-
-    const earthIcosphereMesh = new THREE.Mesh(
-      new THREE.IcosahedronGeometry(1, 5),
-      new THREE.MeshNormalMaterial({
-        wireframe: true,
-      })
-    );
-    const backgroundIcosphereMesh = new THREE.Mesh(
-      new THREE.IcosahedronGeometry(4, 4),
-      new THREE.MeshBasicMaterial({
-        color: 0x606060,
-        wireframe: true,
-        transparent: true,
-        opacity: 0.4,
-      })
-    );
-
-    stage.add(earthIcosphereMesh);
-    background.add(backgroundIcosphereMesh);
-
-    const animate = (time) => {
-      const rad = ((time / 20000) * Math.PI) / 2;
-      earthIcosphereMesh.quaternion.setFromAxisAngle(axisVector, rad);
-      background.quaternion.setFromAxisAngle(axisVector, rad * 0.8);
-
-      renderer.render(scene, camera);
-    };
-    renderer.setAnimationLoop(animate);
-
-    window.addEventListener("resize", resize);
+    initThree();
   }, []);
 
   return (
