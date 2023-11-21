@@ -56,6 +56,8 @@ export default function Home() {
 
     if (speed !== null || movementSpeed !== null)
       setIsMovementsUnavailable(false);
+    else if (speed === null && movementSpeed === null)
+      setIsMovementsUnavailable(true);
 
     if (speed !== null) setMovementSpeed(speed);
     if (heading !== null) setMovementHeading(heading);
