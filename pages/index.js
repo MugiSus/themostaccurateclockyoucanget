@@ -11,16 +11,20 @@ import useInterval from "beautiful-react-hooks/useInterval";
 const RequestServerTimestampInterval = 60000;
 
 export default function Home() {
+  const [isAlreadyGeolocated, setIsAlreadyGeolocated] = useState(false);
+
   const [isCoordinatesUnavailable, setIsCoordinatesUnavailable] =
     useState(false);
   const [longitude, setLongitude] = useState(null);
   const [latitude, setLatitude] = useState(null);
-  const [movementSpeed, setMovementSpeed] = useState(null);
-  const [movementDirection, setMovementDirection] = useState(null);
+
   const [isMovementsUnavailable, setIsMovementsUnavailable] = useState(false);
-  const [isAlreadyGeolocated, setIsAlreadyGeolocated] = useState(false);
+  const [movementSpeed, setMovementSpeed] = useState(null);
+  const [movementHeading, setMovementHeading] = useState(null);
+
   const [localTimeDifference, setLocalTimeDifference] = useState(0);
   const [longitudeTimeDifference, setLongitudeTimeDifference] = useState(0);
+
   const [currentDate, setCurrentDate] = useState(null);
 
   useInterval(() => requestServerTimestamp(), RequestServerTimestampInterval);
@@ -49,8 +53,9 @@ export default function Home() {
 
     setLongitude(longitude);
     setLatitude(latitude);
-    setMovementSpeed(speed);
-    setMovementDirection(heading);
+
+    if (speed !== null) setMovementSpeed(speed);
+    if (heading !== null) setMovementHeading(heading);
 
     const longitudeTimeDiff =
       ((longitude / 15) * 60 + new Date().getTimezoneOffset()) * 60 * 1000;
@@ -198,8 +203,10 @@ export default function Home() {
             >
               {isMovementsUnavailable
                 ? "---"
-                : movementSpeed && movementDirection
-                ? `${(speed * 3.6).toFixed(3)}km/h, ${heading.toFixed(3)}°`
+                : movementSpeed && movementHeading
+                ? `${(movementSpeed * 3.6).toFixed(
+                    3
+                  )}km/h, ${movementHeading.toFixed(3)}°`
                 : "..."}
             </code>
           </div>
