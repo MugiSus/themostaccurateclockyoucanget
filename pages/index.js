@@ -54,7 +54,10 @@ export default function Home() {
     setLongitude(longitude);
     setLatitude(latitude);
 
-    if (speed !== null) setMovementSpeed(speed);
+    if (speed !== null) {
+      setIsMovementsUnavailable(false);
+      setMovementSpeed(speed);
+    }
     if (heading !== null) setMovementHeading(heading);
 
     const longitudeTimeDiff =
@@ -83,7 +86,6 @@ export default function Home() {
     navigator.geolocation.watchPosition(
       (position) => {
         setIsCoordinatesUnavailable(false);
-        setIsMovementsUnavailable(position.coords.speed === null);
         updateDiff(position);
       },
       (error) => {
