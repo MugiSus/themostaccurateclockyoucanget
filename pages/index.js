@@ -177,6 +177,8 @@ export default function Home() {
     setLongitude(longitude);
     setLatitude(latitude);
 
+    setIsMovementsUnavailable(speed === null && movementSpeed === null);
+
     if (speed !== null) setMovementSpeed(speed);
     if (heading !== null) setMovementHeading(heading);
 
