@@ -53,8 +53,9 @@ export default function Home() {
 
     setLongitude(longitude);
     setLatitude(latitude);
-    setMovementSpeed(speed);
-    setMovementHeading(heading);
+
+    if (speed !== null) setMovementSpeed(speed);
+    if (heading !== null) setMovementHeading(heading);
 
     const longitudeTimeDiff =
       ((longitude / 15) * 60 + new Date().getTimezoneOffset()) * 60 * 1000;
