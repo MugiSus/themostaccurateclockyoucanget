@@ -54,10 +54,10 @@ export default function Home() {
     setLongitude(longitude);
     setLatitude(latitude);
 
-    if (speed !== null) {
-      setIsMovementsUnavailable(false);
-      setMovementSpeed(speed);
-    }
+    if (speed === null && movementSpeed === null)
+      setIsMovementsUnavailable(true);
+
+    if (speed !== null) setMovementSpeed(speed);
     if (heading !== null) setMovementHeading(heading);
 
     const longitudeTimeDiff =
