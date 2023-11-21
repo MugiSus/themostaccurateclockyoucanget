@@ -335,6 +335,18 @@ export default function Home() {
                   : "..."}
               </code>
             </div>
+            <div className={styles.topicContainer}>
+              <span className={styles.topicTitle}>Daylight hours</span>
+              <code className={styles.code}>
+                {sunsetTime ?
+                  `${
+                    ["-", "±", "+"][Math.sign(sunsetTime - sunriseTime) + 1]
+                  }${format(
+                    sunsetTime - sunriseTime + timeZoneOffset,
+                    "HH:mm:ss.SSS"
+                  )}` : "..."}
+              </code>
+            </div>
           </details>
         </div>
 
