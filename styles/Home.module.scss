@@ -13,7 +13,7 @@
 }
 
 .title {
-  margin: 4rem 0 0;
+  margin: 0 0;
   line-height: 1.2;
   word-spacing: -0.2rem;
   font-size: 4rem;
@@ -54,7 +54,7 @@
     display: inline-block;
     background: #10101008;
     border-radius: 0.2rem;
-    margin: 0 0.4rem;
+    margin: 0 0.8rem;
     padding: 0.2rem 0.8rem;
     font-size: 1.5rem;
     font-weight: 400;
@@ -66,9 +66,15 @@
   }
 }
 
+.detailSummary {
+  font-weight: 200;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
 .footer {
   font-size: 0.8rem;
-  margin-bottom: 2rem;
+
   font-weight: 200;
 }
 

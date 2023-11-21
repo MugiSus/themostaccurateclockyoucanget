@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import Head from "next/head";
 import styles from "../styles/Home.module.scss";
 import { format } from "date-fns";
@@ -75,6 +74,7 @@ function initThree() {
 
 export default function Home() {
   const [isAlreadyGeolocated, setIsAlreadyGeolocated] = useState(false);
+  const [currentDate, setCurrentDate] = useState(new Date());
 
   const [isCoordinatesUnavailable, setIsCoordinatesUnavailable] =
     useState(false);
@@ -88,7 +88,20 @@ export default function Home() {
   const [localTimeDifference, setLocalTimeDifference] = useState(0);
   const [longitudeTimeDifference, setLongitudeTimeDifference] = useState(0);
 
-  const [currentDate, setCurrentDate] = useState(null);
+  const [sunriseTime, setSunriseTime] = useState(null);
+  const [southingTime, setSouthingTime] = useState(null);
+  const [sunsetTime, setSunsetTime] = useState(null);
+
+  const timeZoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
+
+  const mostAccurateDate = isAlreadyGeolocated
+    ? new Date(
+        currentDate * 1 +
+          localTimeDifference +
+          longitudeTimeDifference +
+          timeZoneOffset
+      )
+    : currentDate;
 
   useInterval(() => requestServerTimestamp(), RequestServerTimestampInterval);
   useRequestAnimationFrame(
@@ -101,10 +114,9 @@ export default function Home() {
 
   const requestServerTimestamp = async () => {
     const timeRequestSent = performance.now();
-
     const timestamp = await worldTimestamp(); // "Etc/UTC"
-
     const requestTime = performance.now() - timeRequestSent;
+
     setLocalTimeDifference(
       timestamp.milliseconds + requestTime / 2 - Date.now()
     );
@@ -113,18 +125,56 @@ export default function Home() {
   const updateDiff = (position) => {
     const { latitude, longitude, heading, speed } = position.coords;
 
+    const longitudeTimeDiff = (longitude / 15) * 60 * 60 * 1000;
+
+    const thisYear = mostAccurateDate.getFullYear();
+    const yearLength = new Date(thisYear + 1, 0, 1) - new Date(thisYear, 0, 1);
+    const fromBegginingOfYear = mostAccurateDate - new Date(thisYear, 0, 1);
+    const theta = (fromBegginingOfYear / yearLength) * 2 * Math.PI;
+
+    const equationOfTime =
+      0.0072 * Math.cos(theta) -
+      0.0528 * Math.cos(2 * theta) +
+      0.0012 * Math.cos(3 * theta) -
+      0.1229 * Math.sin(theta) -
+      0.1565 * Math.sin(2 * theta) -
+      0.0041 * Math.sin(3 * theta);
+
+    const declination =
+      0.006918 -
+      0.399912 * Math.cos(theta) +
+      0.070257 * Math.sin(theta) -
+      0.006758 * Math.cos(2 * theta) +
+      0.000907 * Math.sin(2 * theta) -
+      0.002697 * Math.cos(3 * theta) +
+      0.00148 * Math.sin(3 * theta);
+
+    const azimuth = Math.acos(
+      (Math.sin(-0.899) - Math.sin(latitude) * Math.sin(declination)) /
+        (Math.cos(latitude) * Math.cos(declination))
+    );
+
+    console.log(azimuth * (180 / Math.PI));
+
+    const southingTime =
+      (12 - equationOfTime) * 60 * 60 * 1000 -
+      localTimeDifference -
+      longitudeTimeDiff -
+      timeZoneOffset;
+    const sunriseTime = 0;
+    const sunsetTime = 0;
+
     setLongitude(longitude);
     setLatitude(latitude);
 
     if (speed !== null) setMovementSpeed(speed);
     if (heading !== null) setMovementHeading(heading);
 
-    const longitudeTimeDiff =
-      ((longitude / 15) * 60 + new Date().getTimezoneOffset()) * 60 * 1000;
+    setLongitudeTimeDifference(longitudeTimeDiff);
 
-    console.log(longitudeTimeDiff);
-
-    setLongitudeTimeDifference(longitudeTimeDiff); // 15° = 60min = 60*60sec = 60*60*1000ms
+    setSouthingTime(southingTime);
+    setSunriseTime(sunriseTime);
+    setSunsetTime(sunsetTime);
 
     if (!isAlreadyGeolocated) {
       setIsAlreadyGeolocated(true);
@@ -161,6 +211,7 @@ export default function Home() {
     );
 
     initThree();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -178,7 +229,7 @@ export default function Home() {
           <div className={styles.topicContainer}>
             <span className={styles.topicTitle}>
               <span className={styles.indicator}></span>
-              Your coordinates:
+              Your coordinates
             </span>
             <code
               className={`${styles.code} ${
@@ -197,7 +248,7 @@ export default function Home() {
             </code>
           </div>
           <div className={styles.topicContainer}>
-            <span className={styles.topicTitle}>Your movements:</span>
+            <span className={styles.topicTitle}>Your movements</span>
             <code
               className={`${styles.code} ${
                 isMovementsUnavailable && styles.unavailable
@@ -213,42 +264,60 @@ export default function Home() {
             </code>
           </div>
           <div className={styles.topicContainer}>
-            <span className={styles.topicTitle}>Your inaccurate clock:</span>
+            <span className={styles.topicTitle}>Your inaccurate clock</span>
             <code className={styles.code}>
               {isAlreadyGeolocated
-                ? format(currentDate.getTime(), "yyyy/MM/dd HH:mm:ss.SSS")
+                ? format(currentDate, "yyyy/MM/dd HH:mm:ss.SSS")
                 : "..."}
             </code>
           </div>
           <div className={styles.topicContainer}>
-            <span className={styles.topicTitle}>Your most accurate clock:</span>
+            <span className={styles.topicTitle}>Your most accurate clock</span>
             <code className={styles.code}>
               {isAlreadyGeolocated
-                ? format(
-                    currentDate.getTime() +
-                      localTimeDifference +
-                      longitudeTimeDifference,
-                    "yyyy/MM/dd HH:mm:ss.SSS"
-                  )
+                ? format(mostAccurateDate, "yyyy/MM/dd HH:mm:ss.SSS")
                 : "..."}
             </code>
           </div>
           <div className={styles.topicContainer}>
-            <span className={styles.topicTitle}>Difference:</span>
+            <span className={styles.topicTitle}>Difference</span>
             <code className={styles.code}>
               {currentDate &&
                 `${
-                  ["-", "±", "+"][
-                    Math.sign(localTimeDifference + longitudeTimeDifference) + 1
-                  ]
+                  ["-", "±", "+"][Math.sign(mostAccurateDate - currentDate) + 1]
                 }${format(
-                  localTimeDifference +
-                    longitudeTimeDifference +
-                    currentDate.getTimezoneOffset() * 60 * 1000,
+                  mostAccurateDate - currentDate + timeZoneOffset,
                   "HH:mm:ss.SSS"
                 )}`}
             </code>
           </div>
+          <details>
+            <summary className={styles.detailSummary}>Advanced</summary>
+            <div className={styles.topicContainer}>
+              <span className={styles.topicTitle}>Sunrise Time</span>
+              <code className={styles.code}>
+                {isAlreadyGeolocated
+                  ? format(sunriseTime + timeZoneOffset, "HH:mm:ss.SSS")
+                  : "..."}
+              </code>
+            </div>
+            <div className={styles.topicContainer}>
+              <span className={styles.topicTitle}>Southing Time</span>
+              <code className={styles.code}>
+                {isAlreadyGeolocated
+                  ? format(southingTime + timeZoneOffset, "HH:mm:ss.SSS")
+                  : "..."}
+              </code>
+            </div>
+            <div className={styles.topicContainer}>
+              <span className={styles.topicTitle}>Sunset Time</span>
+              <code className={styles.code}>
+                {isAlreadyGeolocated
+                  ? format(sunsetTime + timeZoneOffset, "HH:mm:ss.SSS")
+                  : "..."}
+              </code>
+            </div>
+          </details>
         </div>
 
         <div className={styles.footer}>
