@@ -251,7 +251,7 @@ export default function Home() {
                 : latitude && longitude
                 ? `${Math.abs(latitude).toFixed(7)}°${
                     latitude >= 0 ? "N" : "S"
-                  }, ${Math.abs(longitude).toFixed(7)}°${
+                  } ${Math.abs(longitude).toFixed(7)}°${
                     longitude >= 0 ? "E" : "W"
                   }`
                 : "..."}
@@ -338,13 +338,14 @@ export default function Home() {
             <div className={styles.topicContainer}>
               <span className={styles.topicTitle}>Daylight hours</span>
               <code className={styles.code}>
-                {sunsetTime ?
-                  `${
-                    ["-", "±", "+"][Math.sign(sunsetTime - sunriseTime) + 1]
-                  }${format(
-                    sunsetTime - sunriseTime + timeZoneOffset,
-                    "HH:mm:ss.SSS"
-                  )}` : "..."}
+                {sunsetTime
+                  ? `${
+                      ["-", "±", "+"][Math.sign(sunsetTime - sunriseTime) + 1]
+                    }${format(
+                      sunsetTime - sunriseTime + timeZoneOffset,
+                      "HH:mm:ss.SSS"
+                    )}`
+                  : "..."}
               </code>
             </div>
           </details>
