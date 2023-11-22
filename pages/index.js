@@ -1,6 +1,5 @@
 import Head from "next/head";
 import styles from "../styles/Home.module.scss";
-import { format } from "date-fns";
 import { useState, useEffect } from "react";
 import worldTimestamp from "world-timestamp";
 import * as THREE from "three";
@@ -8,6 +7,44 @@ import useRequestAnimationFrame from "beautiful-react-hooks/useRequestAnimationF
 import useInterval from "beautiful-react-hooks/useInterval";
 
 const RequestServerTimestampInterval = 60000;
+
+const formatDateDistance = (a, b) => {
+  const distance = Math.abs(b - a);
+  const sign = ["-", "±", "+"][Math.sign(b - a) + 1];
+  return `${sign}${formatTime(distance)}`;
+};
+
+const formatTime = (time) => {
+  const hour = Math.floor(time / (60 * 60 * 1000))
+    .toString()
+    .padStart(2, "0");
+  const minute = Math.floor((time / (60 * 1000)) % 60)
+    .toString()
+    .padStart(2, "0");
+  const second = Math.floor((time / 1000) % 60)
+    .toString()
+    .padStart(2, "0");
+  const millisecond = Math.floor(time % 1000)
+    .toString()
+    .padStart(3, "0");
+
+  return `${hour}:${minute}:${second}.${millisecond}`;
+};
+
+const formatDateFull = (d) => {
+  const date = new Date(d);
+
+  const year = date.getFullYear().toString().padStart(4, "0");
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const day = date.getDate().toString().padStart(2, "0");
+
+  const hour = date.getHours().toString().padStart(2, "0");
+  const minute = date.getMinutes().toString().padStart(2, "0");
+  const second = date.getSeconds().toString().padStart(2, "0");
+  const millisecond = date.getMilliseconds().toString().padStart(3, "0");
+
+  return `${year}/${month}/${day} ${hour}:${minute}:${second}.${millisecond}`;
+};
 
 function initThree() {
   // three.js
@@ -277,29 +314,19 @@ export default function Home() {
           <div className={styles.topicContainer}>
             <span className={styles.topicTitle}>Your inaccurate clock</span>
             <code className={styles.code}>
-              {isAlreadyGeolocated
-                ? format(currentDate, "yyyy/MM/dd HH:mm:ss.SSS")
-                : "..."}
+              {isAlreadyGeolocated ? formatDateFull(currentDate) : "..."}
             </code>
           </div>
           <div className={styles.topicContainer}>
             <span className={styles.topicTitle}>Your most accurate clock</span>
             <code className={styles.code}>
-              {isAlreadyGeolocated
-                ? format(mostAccurateDate, "yyyy/MM/dd HH:mm:ss.SSS")
-                : "..."}
+              {isAlreadyGeolocated ? formatDateFull(mostAccurateDate) : "..."}
             </code>
           </div>
           <div className={styles.topicContainer}>
             <span className={styles.topicTitle}>Difference</span>
             <code className={styles.code}>
-              {currentDate &&
-                `${
-                  ["-", "±", "+"][Math.sign(mostAccurateDate - currentDate) + 1]
-                }${format(
-                  Math.abs(mostAccurateDate - currentDate) + timeZoneOffset,
-                  "HH:mm:ss.SSS"
-                )}`}
+              {currentDate && formatDateDistance(currentDate, mostAccurateDate)}
             </code>
           </div>
           <details>
@@ -315,37 +342,26 @@ export default function Home() {
             <div className={styles.topicContainer}>
               <span className={styles.topicTitle}>Sunrise time</span>
               <code className={styles.code}>
-                {isAlreadyGeolocated
-                  ? format(sunriseTime + timeZoneOffset, "HH:mm:ss.SSS")
-                  : "..."}
+                {isAlreadyGeolocated ? formatTime(sunriseTime) : "..."}
               </code>
             </div>
             <div className={styles.topicContainer}>
               <span className={styles.topicTitle}>Southing time</span>
               <code className={styles.code}>
-                {isAlreadyGeolocated
-                  ? format(southingTime + timeZoneOffset, "HH:mm:ss.SSS")
-                  : "..."}
+                {isAlreadyGeolocated ? formatTime(southingTime) : "..."}
               </code>
             </div>
             <div className={styles.topicContainer}>
               <span className={styles.topicTitle}>Sunset time</span>
               <code className={styles.code}>
-                {isAlreadyGeolocated
-                  ? format(sunsetTime + timeZoneOffset, "HH:mm:ss.SSS")
-                  : "..."}
+                {isAlreadyGeolocated ? formatTime(sunsetTime) : "..."}
               </code>
             </div>
             <div className={styles.topicContainer}>
               <span className={styles.topicTitle}>Daylight hours</span>
               <code className={styles.code}>
                 {isAlreadyGeolocated
-                  ? `${
-                      ["-", "±", "+"][Math.sign(sunsetTime - sunriseTime) + 1]
-                    }${format(
-                      Math.abs(sunsetTime - sunriseTime) + timeZoneOffset,
-                      "HH:mm:ss.SSS"
-                    )}`
+                  ? formatDateDistance(sunriseTime, sunsetTime)
                   : "..."}
               </code>
             </div>
