@@ -278,7 +278,7 @@ export default function Home() {
         <div className={styles.description}>
           <div className={styles.topicContainer}>
             <span className={styles.topicTitle}>
-              <span className={styles.indicator}></span>
+              <div className={styles.indicator} />
               Your coordinates
             </span>
             <code
@@ -328,19 +328,22 @@ export default function Home() {
           <div className={styles.topicContainer}>
             <span className={styles.topicTitle}>Difference</span>
             <code className={styles.code}>
-              {currentDate && formatDateDistance(currentDate, mostAccurateDate)}
+              {isAlreadyGeolocated
+                ? formatDateDistance(currentDate, mostAccurateDate)
+                : "±00:00:00.000"}
             </code>
           </div>
+          <div className={styles.topicContainer}>
+            <span className={styles.topicTitle}>Daylight hours</span>
+            <code className={styles.code}>
+              {isAlreadyGeolocated
+                ? formatDateDistance(sunriseTime, sunsetTime)
+                : "±00:00:00.000"}
+            </code>
+          </div>
+
           <details>
             <summary className={styles.detailSummary}>Advanced</summary>
-            <div className={styles.topicContainer}>
-              <span className={styles.topicTitle}>Year progress</span>
-              <code className={styles.code}>
-                {isAlreadyGeolocated
-                  ? `${(yearProgress * 100).toFixed(6)}%`
-                  : "..."}
-              </code>
-            </div>
             <div className={styles.topicContainer}>
               <span className={styles.topicTitle}>Sunrise time</span>
               <code className={styles.code}>
@@ -360,10 +363,10 @@ export default function Home() {
               </code>
             </div>
             <div className={styles.topicContainer}>
-              <span className={styles.topicTitle}>Daylight hours</span>
+              <span className={styles.topicTitle}>Year progress</span>
               <code className={styles.code}>
                 {isAlreadyGeolocated
-                  ? formatDateDistance(sunriseTime, sunsetTime)
+                  ? `${(yearProgress * 100).toFixed(6)}%`
                   : "..."}
               </code>
             </div>
