@@ -1,6 +1,5 @@
 import Head from "next/head";
 import styles from "../styles/Home.module.scss";
-import { format } from "date-fns";
 import { useState, useEffect } from "react";
 import worldTimestamp from "world-timestamp";
 import * as THREE from "three";
