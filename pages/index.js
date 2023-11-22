@@ -14,7 +14,9 @@ const formatDateDistance = (a, b) => {
   return `${sign}${formatTime(distance)}`;
 };
 
-const formatTime = (time) => {
+const formatTime = (t) => {
+  const time = t < 0 ? t + 24 * 60 * 60 * 1000 : t;
+
   const hour = Math.floor(time / (60 * 60 * 1000))
     .toString()
     .padStart(2, "0");
