@@ -127,9 +127,7 @@ export default function Home() {
     );
   };
 
-  const updateDiff = (position) => {
-    const { latitude, longitude, heading, speed } = position.coords;
-
+  const updateDiff = ({ latitude, longitude, heading, speed }) => {
     const longitudeTimeDiff = (longitude / 15) * 60 * 60 * 1000;
 
     const theta = yearProgress * 2 * Math.PI;
@@ -160,15 +158,18 @@ export default function Home() {
     const southingTime =
       (720 - equationOfTime) * 60 * 1000 -
       localTimeDifference -
-      longitudeTimeDiff;
+      longitudeTimeDiff -
+      timeZoneOffset;
     const sunriseTime =
       (720 - 4 * (hourAngle / Math.PI) * 180 - equationOfTime) * 60 * 1000 -
       localTimeDifference -
-      longitudeTimeDiff;
+      longitudeTimeDiff -
+      timeZoneOffset;
     const sunsetTime =
       (720 + 4 * (hourAngle / Math.PI) * 180 - equationOfTime) * 60 * 1000 -
       localTimeDifference -
-      longitudeTimeDiff;
+      longitudeTimeDiff -
+      timeZoneOffset;
 
     setLongitude(longitude);
     setLatitude(latitude);
@@ -180,9 +181,9 @@ export default function Home() {
 
     setLongitudeTimeDifference(longitudeTimeDiff);
 
-    setSunriseTime(sunriseTime);
+    setSunriseTime(sunriseTime || 0);
     setSouthingTime(southingTime);
-    setSunsetTime(sunsetTime);
+    setSunsetTime(sunsetTime || 0);
 
     document
       .getElementsByClassName(styles.indicator)[0]
@@ -204,7 +205,7 @@ export default function Home() {
           setIsAlreadyGeolocated(true);
           requestServerTimestamp();
         }
-        updateDiff(position);
+        updateDiff(position.coords);
       },
       (error) => {
         console.error(error);
@@ -248,7 +249,7 @@ export default function Home() {
             >
               {isCoordinatesUnavailable
                 ? "---"
-                : latitude && longitude
+                : latitude !== null && longitude !== null
                 ? `${Math.abs(latitude).toFixed(7)}°${
                     latitude >= 0 ? "N" : "S"
                   } ${Math.abs(longitude).toFixed(7)}°${
@@ -266,7 +267,7 @@ export default function Home() {
             >
               {isMovementsUnavailable
                 ? "---"
-                : movementSpeed && movementHeading
+                : movementSpeed !== null && movementHeading !== null
                 ? `${(movementSpeed * 3.6).toFixed(
                     3
                   )}km/h ${movementHeading.toFixed(3)}°`
@@ -296,7 +297,7 @@ export default function Home() {
                 `${
                   ["-", "±", "+"][Math.sign(mostAccurateDate - currentDate) + 1]
                 }${format(
-                  mostAccurateDate - currentDate + timeZoneOffset,
+                  Math.abs(mostAccurateDate - currentDate) + timeZoneOffset,
                   "HH:mm:ss.SSS"
                 )}`}
             </code>
@@ -315,7 +316,7 @@ export default function Home() {
               <span className={styles.topicTitle}>Sunrise time</span>
               <code className={styles.code}>
                 {isAlreadyGeolocated
-                  ? format(sunriseTime, "HH:mm:ss.SSS")
+                  ? format(sunriseTime + timeZoneOffset, "HH:mm:ss.SSS")
                   : "..."}
               </code>
             </div>
@@ -323,7 +324,7 @@ export default function Home() {
               <span className={styles.topicTitle}>Southing time</span>
               <code className={styles.code}>
                 {isAlreadyGeolocated
-                  ? format(southingTime, "HH:mm:ss.SSS")
+                  ? format(southingTime + timeZoneOffset, "HH:mm:ss.SSS")
                   : "..."}
               </code>
             </div>
@@ -331,18 +332,18 @@ export default function Home() {
               <span className={styles.topicTitle}>Sunset time</span>
               <code className={styles.code}>
                 {isAlreadyGeolocated
-                  ? format(sunsetTime, "HH:mm:ss.SSS")
+                  ? format(sunsetTime + timeZoneOffset, "HH:mm:ss.SSS")
                   : "..."}
               </code>
             </div>
             <div className={styles.topicContainer}>
               <span className={styles.topicTitle}>Daylight hours</span>
               <code className={styles.code}>
-                {sunsetTime
+                {isAlreadyGeolocated
                   ? `${
                       ["-", "±", "+"][Math.sign(sunsetTime - sunriseTime) + 1]
                     }${format(
-                      sunsetTime - sunriseTime + timeZoneOffset,
+                      Math.abs(sunsetTime - sunriseTime) + timeZoneOffset,
                       "HH:mm:ss.SSS"
                     )}`
                   : "..."}
