@@ -333,14 +333,6 @@ export default function Home() {
                 : "±00:00:00.000"}
             </code>
           </div>
-          <div className={styles.topicContainer}>
-            <span className={styles.topicTitle}>Daylight hours</span>
-            <code className={styles.code}>
-              {isAlreadyGeolocated
-                ? formatDateDistance(sunriseTime, sunsetTime)
-                : "±00:00:00.000"}
-            </code>
-          </div>
 
           <details>
             <summary className={styles.detailSummary}>Advanced</summary>
@@ -360,6 +352,14 @@ export default function Home() {
               <span className={styles.topicTitle}>Sunset time</span>
               <code className={styles.code}>
                 {isAlreadyGeolocated ? formatTime(sunsetTime) : "..."}
+              </code>
+            </div>
+            <div className={styles.topicContainer}>
+              <span className={styles.topicTitle}>Daylight hours</span>
+              <code className={styles.code}>
+                {isAlreadyGeolocated
+                  ? formatDateDistance(sunriseTime, sunsetTime)
+                  : "±00:00:00.000"}
               </code>
             </div>
             <div className={styles.topicContainer}>
