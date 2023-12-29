@@ -300,29 +300,31 @@ export default function Home() {
           </div>
           <div className={styles.topicContainer}>
             <span className={styles.topicTitle}>Your movements</span>
-            <code
-              className={`${styles.code} ${
-                isMovementsUnavailable && styles.unavailable
-              }`}
-            >
-              {isMovementsUnavailable
-                ? "---"
-                : movementSpeed !== null && movementHeading !== null
-                ? `${(movementSpeed * 3.6).toFixed(
-                    3
-                  )}km/h ${movementHeading.toFixed(3)}°`
-                : "..."}
-            </code>
-            <Image
-              src="/heading-arrow.svg"
-              width={20}
-              height={20}
-              alt="heading-arrow"
-              style={{
-                transform: `rotate(${movementHeading}deg)`,
-                opacity: isMovementsUnavailable ? 0.4 : 1,
-              }}
-            />
+            <div className={styles.movementsContainer}>
+              <code
+                className={`${styles.code} ${
+                  isMovementsUnavailable && styles.unavailable
+                }`}
+              >
+                {isMovementsUnavailable
+                  ? "---"
+                  : movementSpeed !== null && movementHeading !== null
+                  ? `${(movementSpeed * 3.6).toFixed(
+                      3
+                    )}km/h ${movementHeading.toFixed(3)}°`
+                  : "..."}
+              </code>
+              <Image
+                src="/heading-arrow.svg"
+                width={20}
+                height={20}
+                alt="heading-arrow"
+                style={{
+                  transform: `rotate(${movementHeading}deg)`,
+                  opacity: isMovementsUnavailable ? 0.4 : 1,
+                }}
+              />
+            </div>
           </div>
           <div className={styles.topicContainer}>
             <span className={styles.topicTitle}>Your inaccurate clock</span>

@@ -65,6 +65,13 @@
     font-family: Inconsolata, monospace;
   }
 
+  .movementsContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+  }
+
   .unavailable {
     color: #00000040;
   }
