@@ -5,6 +5,7 @@ import worldTimestamp from "world-timestamp";
 import * as THREE from "three";
 import useRequestAnimationFrame from "beautiful-react-hooks/useRequestAnimationFrame";
 import useInterval from "beautiful-react-hooks/useInterval";
+import Image from "next/image";
 
 const RequestServerTimestampInterval = 60000;
 
@@ -312,6 +313,16 @@ export default function Home() {
                   )}km/h ${movementHeading.toFixed(3)}°`
                 : "..."}
             </code>
+            <Image
+              src="/heading-arrow.svg"
+              width={20}
+              height={20}
+              alt="heading-arrow"
+              style={{
+                transform: `rotate(${movementHeading}deg)`,
+                opacity: isMovementsUnavailable ? 0.4 : 1,
+              }}
+            />
           </div>
           <div className={styles.topicContainer}>
             <span className={styles.topicTitle}>Your inaccurate clock</span>
